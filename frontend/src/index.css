@@ -7,11 +7,14 @@
 /* Preline UI */
 @source "../node_modules/preline/dist/*.js";
 
-/* Spark Custom Theme */
 @theme {
-  --color-spark-primary: #1a1a2e;
-  --color-spark-secondary: #16213e;
-  --color-spark-accent: #e94560;
-  --color-spark-gold: #f5a623;
-  --color-spark-light: #f8f9fa;
+  --font-heading: "Montserrat", sans-serif;
+  --font-body: "Poppins", sans-serif;
+
+  --color-spark-primary: #e32321;
+  --color-spark-primary-hover: #c41e1c;
+  --color-spark-navy: #0d1a3e;
+  --color-spark-dark: #1d2736;
+  --color-spark-gray: #454545;
+  --color-spark-light: #f8f8f8;
 }
