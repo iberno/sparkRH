@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
-import { useThemeStore } from './stores/themeStore';
 
 const stored = localStorage.getItem('spark-theme');
 if (stored) {
