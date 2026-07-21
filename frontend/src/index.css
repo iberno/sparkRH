@@ -23,3 +23,14 @@
   --color-spark-dark-border: #1a2a4d;
   --color-spark-dark-text: #c5d0e6;
 }
+
+/* Select dropdown dark mode fix */
+.dark select option {
+  background-color: #0a1229;
+  color: #c5d0e6;
+}
+
+select option {
+  background-color: #ffffff;
+  color: #1d2736;
+}

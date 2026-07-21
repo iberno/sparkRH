@@ -134,7 +134,7 @@ export function UserFormPage() {
         }
       />
 
-      <div className="max-w-2xl">
+      <div className="max-w-2xl mx-auto">
         <Card>
           <CardContent>
             {error && <Alert variant="error" className="mb-4">{error}</Alert>}
@@ -181,7 +181,7 @@ export function UserFormPage() {
                   </label>
                   <select
                     {...register('role')}
-                    className="w-full h-[38px] px-3 py-2 text-sm dark:bg-spark-dark-bg bg-gray-50 dark:border-spark-dark-border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-spark-primary"
+                    className="w-full h-[38px] px-3 py-2 text-sm dark:bg-spark-dark-bg bg-gray-50 dark:text-spark-dark-text text-spark-dark dark:border-spark-dark-border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-spark-primary"
                   >
                     {Object.entries(ROLES).map(([key, label]) => (
                       <option key={key} value={key}>{label}</option>
@@ -197,7 +197,7 @@ export function UserFormPage() {
                   </label>
                   <select
                     {...register('employeeId')}
-                    className="w-full h-[38px] px-3 py-2 text-sm dark:bg-spark-dark-bg bg-gray-50 dark:border-spark-dark-border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-spark-primary"
+                    className="w-full h-[38px] px-3 py-2 text-sm dark:bg-spark-dark-bg bg-gray-50 dark:text-spark-dark-text text-spark-dark dark:border-spark-dark-border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-spark-primary"
                   >
                     <option value="">Nenhum</option>
                     {employees.map((emp) => (
