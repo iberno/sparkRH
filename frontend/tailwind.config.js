@@ -6,18 +6,4 @@ export default {
     './node_modules/preline/dist/*.js',
   ],
   darkMode: 'class',
-  theme: {
-    extend: {
-      colors: {
-        spark: {
-          primary: '#1a1a2e',
-          secondary: '#16213e',
-          accent: '#e94560',
-          gold: '#f5a623',
-          light: '#f8f9fa',
-        },
-      },
-    },
-  },
-  plugins: ['preline/plugin'],
 };
