@@ -14,7 +14,9 @@ export class UsersService {
     page?: number;
     limit?: number;
   }) {
-    const { search, role, is_active, page = 1, limit = 10 } = query;
+    const { search, role, is_active } = query;
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 10;
 
     const where: any = {};
 
@@ -37,7 +39,16 @@ export class UsersService {
     const [users, total] = await Promise.all([
       this.prisma.users.findMany({
         where,
-        include: {
+        select: {
+          id: true,
+          cpf: true,
+          email: true,
+          role: true,
+          is_active: true,
+          is_first_access: true,
+          last_login: true,
+          created_at: true,
+          updated_at: true,
           employee: {
             select: {
               id: true,
