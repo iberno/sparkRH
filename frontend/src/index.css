@@ -17,4 +17,9 @@
   --color-spark-dark: #1d2736;
   --color-spark-gray: #454545;
   --color-spark-light: #f8f8f8;
+
+  --color-spark-dark-bg: #0a1229;
+  --color-spark-dark-surface: #111d3a;
+  --color-spark-dark-border: #1a2a4d;
+  --color-spark-dark-text: #c5d0e6;
 }

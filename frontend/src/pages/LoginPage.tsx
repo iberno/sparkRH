@@ -57,11 +57,11 @@ export function LoginPage() {
   };
 
   return (
-    <div className="dark:bg-neutral-900 bg-spark-light flex flex-col justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8 relative font-body">
+    <div className="dark:bg-spark-dark-bg bg-spark-light flex flex-col justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8 relative font-body">
       <button
         type="button"
         onClick={toggleTheme}
-        className="absolute top-4 right-4 size-9 flex justify-center items-center rounded-lg dark:text-neutral-400 text-spark-gray hover:bg-gray-200 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-spark-primary transition-colors"
+        className="absolute top-4 right-4 size-9 flex justify-center items-center rounded-lg dark:text-spark-dark-text text-spark-gray hover:bg-gray-200 dark:hover:bg-spark-dark-surface focus:outline-none focus:ring-2 focus:ring-spark-primary transition-colors"
       >
         {theme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />}
       </button>
@@ -74,12 +74,12 @@ export function LoginPage() {
           <h1 className="text-2xl font-bold dark:text-white text-spark-dark font-heading">
             Spark RH & DP Portal
           </h1>
-          <p className="mt-2 dark:text-neutral-400 text-spark-gray">
+          <p className="mt-2 dark:text-spark-dark-text text-spark-gray">
             Faça login com seu CPF
           </p>
         </div>
 
-        <div className="dark:bg-neutral-800 bg-white border dark:border-neutral-700 border-gray-200 shadow-2xs rounded-xl p-4 sm:p-7">
+        <div className="dark:bg-spark-dark-surface bg-white border dark:border-spark-dark-border border-gray-200 shadow-2xs rounded-xl p-4 sm:p-7">
           <form onSubmit={handleSubmit(onSubmit)}>
             {error && (
               <div className="mb-4 flex items-center gap-3 p-4 dark:bg-red-500/10 bg-red-50 border dark:border-red-500/30 border-red-200 rounded-lg">
@@ -89,7 +89,7 @@ export function LoginPage() {
             )}
 
             <div className="mb-4">
-              <label htmlFor="cpf" className="block mb-2 text-sm dark:text-neutral-200 text-spark-dark font-medium">
+              <label htmlFor="cpf" className="block mb-2 text-sm dark:text-spark-dark-text text-spark-dark font-medium">
                 CPF
               </label>
               <input
@@ -101,10 +101,10 @@ export function LoginPage() {
                   register('cpf').onChange(e);
                 }}
                 placeholder="000.000.000-00"
-                className={`py-2.5 px-4 block w-full border dark:bg-neutral-900 bg-gray-50 dark:text-neutral-200 text-spark-dark rounded-lg text-sm focus:border-spark-primary focus:ring-spark-primary disabled:opacity-50 disabled:pointer-events-none ${
+                className={`py-2.5 px-4 block w-full border dark:bg-spark-dark-bg dark:text-spark-dark-text bg-gray-50 text-spark-dark rounded-lg text-sm focus:border-spark-primary focus:ring-spark-primary disabled:opacity-50 disabled:pointer-events-none ${
                   errors.cpf
                     ? 'dark:border-red-500/50 border-red-500'
-                    : 'dark:border-neutral-700 border-gray-200'
+                    : 'dark:border-spark-dark-border border-gray-200'
                 }`}
               />
               {errors.cpf && (
@@ -113,7 +113,7 @@ export function LoginPage() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="password" className="block mb-2 text-sm dark:text-neutral-200 text-spark-dark font-medium">
+              <label htmlFor="password" className="block mb-2 text-sm dark:text-spark-dark-text text-spark-dark font-medium">
                 Senha
               </label>
               <input
@@ -121,10 +121,10 @@ export function LoginPage() {
                 id="password"
                 {...register('password')}
                 placeholder="Sua senha"
-                className={`py-2.5 px-4 block w-full border dark:bg-neutral-900 bg-gray-50 dark:text-neutral-200 text-spark-dark rounded-lg text-sm focus:border-spark-primary focus:ring-spark-primary disabled:opacity-50 disabled:pointer-events-none ${
+                className={`py-2.5 px-4 block w-full border dark:bg-spark-dark-bg dark:text-spark-dark-text bg-gray-50 text-spark-dark rounded-lg text-sm focus:border-spark-primary focus:ring-spark-primary disabled:opacity-50 disabled:pointer-events-none ${
                   errors.password
                     ? 'dark:border-red-500/50 border-red-500'
-                    : 'dark:border-neutral-700 border-gray-200'
+                    : 'dark:border-spark-dark-border border-gray-200'
                 }`}
               />
               {errors.password && (
@@ -137,9 +137,9 @@ export function LoginPage() {
                 <input
                   type="checkbox"
                   id="remember-me"
-                  className="border dark:border-neutral-600 border-gray-300 rounded dark:bg-neutral-900 bg-gray-50 text-spark-primary focus:ring-spark-primary"
+                  className="border dark:border-spark-dark-border border-gray-300 rounded dark:bg-spark-dark-bg bg-gray-50 text-spark-primary focus:ring-spark-primary"
                 />
-                <span className="text-sm dark:text-neutral-400 text-spark-gray">Lembrar-me</span>
+                <span className="text-sm dark:text-spark-dark-text text-spark-gray">Lembrar-me</span>
               </label>
               <a className="text-sm text-spark-primary hover:text-spark-primary-hover hover:underline" href="#">
                 Esqueci minha senha
