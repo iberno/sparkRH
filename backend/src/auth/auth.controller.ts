@@ -1,9 +1,15 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { IsString, IsNotEmpty } from 'class-validator';
 import { AuthService } from './auth.service';
 
 class LoginDto {
+  @IsString()
+  @IsNotEmpty()
   cpf: string;
+
+  @IsString()
+  @IsNotEmpty()
   password: string;
 }
 
