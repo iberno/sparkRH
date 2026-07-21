@@ -2,6 +2,11 @@ import { z } from 'zod';
 
 export const cpfSchema = z.string().refine((val) => {
   const digits = val.replace(/\D/g, '');
+  return digits.length === 11;
+}, 'CPF deve ter 11 dígitos');
+
+export const cpfFullSchema = z.string().refine((val) => {
+  const digits = val.replace(/\D/g, '');
   if (digits.length !== 11) return false;
   if (/^(\d)\1{10}$/.test(digits)) return false;
 

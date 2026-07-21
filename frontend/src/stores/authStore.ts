@@ -10,8 +10,10 @@ interface User {
 
 interface AuthState {
   token: string | null;
+  refreshToken: string | null;
   user: User | null;
-  setAuth: (token: string, user: User) => void;
+  setAuth: (token: string, refreshToken: string, user: User) => void;
+  setToken: (token: string) => void;
   logout: () => void;
 }
 
@@ -19,9 +21,11 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       token: null,
+      refreshToken: null,
       user: null,
-      setAuth: (token, user) => set({ token, user }),
-      logout: () => set({ token: null, user: null }),
+      setAuth: (token, refreshToken, user) => set({ token, refreshToken, user }),
+      setToken: (token) => set({ token }),
+      logout: () => set({ token: null, refreshToken: null, user: null }),
     }),
     {
       name: 'spark-auth',

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Shield } from 'lucide-react';
@@ -32,7 +32,8 @@ export function LoginPage() {
         cpf: data.cpf,
         password: data.password,
       });
-      setAuth(response.data.access_token, response.data.user);
+      const { access_token, refresh_token, user } = response.data;
+      setAuth(access_token, refresh_token, user);
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erro ao fazer login');
@@ -93,14 +94,20 @@ export function LoginPage() {
               />
               <span className="text-sm dark:text-spark-dark-text text-spark-gray">Lembrar-me</span>
             </label>
-            <a className="text-sm text-spark-primary hover:text-spark-primary-hover hover:underline" href="#">
+            <Link to="/forgot-password" className="text-sm text-spark-primary hover:text-spark-primary-hover hover:underline">
               Esqueci minha senha
-            </a>
+            </Link>
           </div>
 
           <Button type="submit" isLoading={isLoading} className="w-full">
             Entrar
           </Button>
+
+          <div className="mt-4 text-center">
+            <Link to="/first-access" className="text-sm text-spark-primary hover:text-spark-primary-hover hover:underline">
+              Primeiro acesso? Clique aqui
+            </Link>
+          </div>
         </form>
       </div>
     </div>
