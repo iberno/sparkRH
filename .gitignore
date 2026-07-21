@@ -37,3 +37,4 @@ backend/prisma/migrations/
 
 # Docker
 docker-compose.override.yml
+backend/.env

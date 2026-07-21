@@ -25,11 +25,14 @@ model users {
   updated_at      DateTime  @updatedAt
   deleted_at      DateTime?
 
-  employee        employees? @relation(fields: [employee_id], references: [id])
-  verification_codes verification_codes[]
-  notification_channels notification_channels[]
-  n8n_agent_logs  n8n_agent_logs[]
-  audit_logs      audit_logs[]
+  employee               employees?               @relation(fields: [employee_id], references: [id])
+  verification_codes     verification_codes[]
+  notification_channels  notification_channels[]
+  audit_logs             audit_logs[]
+  permissions            user_permissions[]
+  time_clocks_approved   time_clocks[]
+  time_clock_adjustments time_clock_adjustments[]
+  time_sheets_approved   time_sheets[]
 
   @@index([cpf])
   @@map("users")
@@ -49,16 +52,16 @@ model user_permissions {
 }
 
 model audit_logs {
-  id          String   @id @default(uuid()) @db.Uuid
-  user_id     String?  @db.Uuid
-  action      String   @db.VarChar(100)
-  entity      String   @db.VarChar(100)
-  entity_id   String   @db.Uuid
-  old_values  Json?
-  new_values  Json?
-  ip_address  String?  @db.Inet
-  user_agent  String?
-  created_at  DateTime @default(now())
+  id         String   @id @default(uuid()) @db.Uuid
+  user_id    String?  @db.Uuid
+  action     String   @db.VarChar(100)
+  entity     String   @db.VarChar(100)
+  entity_id  String   @db.Uuid
+  old_values Json?
+  new_values Json?
+  ip_address String?  @db.Inet
+  user_agent String?
+  created_at DateTime @default(now())
 
   user users? @relation(fields: [user_id], references: [id])
 
@@ -67,18 +70,18 @@ model audit_logs {
 }
 
 model verification_codes {
-  id            String   @id @default(uuid()) @db.Uuid
-  user_id       String?  @db.Uuid
-  cpf           String   @db.VarChar(14)
-  code_hash     String   @db.VarChar(255)
-  type          String   @db.VarChar(30)
-  channel       String   @db.VarChar(20)
-  phone         String   @db.VarChar(20)
-  attempts      Int      @default(0)
-  max_attempts  Int      @default(3)
-  used          Boolean  @default(false)
-  expires_at    DateTime
-  created_at    DateTime @default(now())
+  id           String   @id @default(uuid()) @db.Uuid
+  user_id      String?  @db.Uuid
+  cpf          String   @db.VarChar(14)
+  code_hash    String   @db.VarChar(255)
+  type         String   @db.VarChar(30)
+  channel      String   @db.VarChar(20)
+  phone        String   @db.VarChar(20)
+  attempts     Int      @default(0)
+  max_attempts Int      @default(3)
+  used         Boolean  @default(false)
+  expires_at   DateTime
+  created_at   DateTime @default(now())
 
   user users? @relation(fields: [user_id], references: [id])
 
@@ -102,24 +105,6 @@ model notification_channels {
   @@map("notification_channels")
 }
 
-model n8n_agent_logs {
-  id            String   @id @default(uuid()) @db.Uuid
-  user_id       String?  @db.Uuid
-  channel       String   @db.VarChar(20)
-  message_type  String   @db.VarChar(50)
-  request_data  Json?
-  response_data Json?
-  status        String   @default("PENDING") @db.VarChar(20)
-  approved_by   String?  @db.Uuid
-  approved_at   DateTime?
-  created_at    DateTime @default(now())
-
-  user          users?   @relation("agent_logs_user", fields: [user_id], references: [id])
-  approver      users?   @relation("agent_logs_approver", fields: [approved_by], references: [id])
-
-  @@map("n8n_agent_logs")
-}
-
 // ============================================================
 // Module: Employees
 // ============================================================
@@ -139,46 +124,46 @@ model employees {
   nationality         String?   @default("Brasileira") @db.VarChar(100)
 
   // Contact
-  email               String?   @db.VarChar(255)
-  phone               String?   @db.VarChar(20)
-  phone_secondary     String?   @db.VarChar(20)
+  email           String? @db.VarChar(255)
+  phone           String? @db.VarChar(20)
+  phone_secondary String? @db.VarChar(20)
 
   // Address
-  address_street      String?   @db.VarChar(255)
-  address_number      String?   @db.VarChar(20)
-  address_complement  String?   @db.VarChar(100)
-  address_neighborhood String?  @db.VarChar(100)
-  address_city        String?   @db.VarChar(100)
-  address_state       String?   @db.VarChar(2)
-  address_zip         String?   @db.VarChar(10)
+  address_street       String? @db.VarChar(255)
+  address_number       String? @db.VarChar(20)
+  address_complement   String? @db.VarChar(100)
+  address_neighborhood String? @db.VarChar(100)
+  address_city         String? @db.VarChar(100)
+  address_state        String? @db.VarChar(2)
+  address_zip          String? @db.VarChar(10)
 
   // Bank Data
-  bank_name           String?   @db.VarChar(100)
-  bank_agency         String?   @db.VarChar(20)
-  bank_account        String?   @db.VarChar(20)
-  bank_account_type   String?   @db.VarChar(20)
-  bank_pix            String?   @db.VarChar(255)
+  bank_name         String? @db.VarChar(100)
+  bank_agency       String? @db.VarChar(20)
+  bank_account      String? @db.VarChar(20)
+  bank_account_type String? @db.VarChar(20)
+  bank_pix          String? @db.VarChar(255)
 
   // PIS/PASEP
-  pis_pasep           String?   @db.VarChar(20)
+  pis_pasep String? @db.VarChar(20)
 
   // CTPS
-  ctps_number         String?   @db.VarChar(20)
-  ctps_series         String?   @db.VarChar(20)
-  ctps_state          String?   @db.VarChar(2)
+  ctps_number String? @db.VarChar(20)
+  ctps_series String? @db.VarChar(20)
+  ctps_state  String? @db.VarChar(2)
 
   // Photo
-  photo_url           String?   @db.VarChar(500)
+  photo_url String? @db.VarChar(500)
 
   // Status
-  status              String    @default("ATIVO") @db.VarChar(20)
-  admission_date      DateTime  @db.Date
-  resignation_date    DateTime?
-  resignation_reason  String?
+  status             String    @default("ATIVO") @db.VarChar(20)
+  admission_date     DateTime  @db.Date
+  resignation_date   DateTime?
+  resignation_reason String?
 
   // Control
-  created_at          DateTime  @default(now())
-  updated_at          DateTime  @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   user                users?
   assignments         assignments[]
@@ -203,83 +188,83 @@ model employees {
 // ============================================================
 
 model companies {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(255)
-  cnpj        String   @unique @db.VarChar(18)
-  phone       String?  @db.VarChar(20)
-  email       String?  @db.VarChar(255)
-  address     String?
-  is_active   Boolean  @default(true)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String   @db.VarChar(255)
+  cnpj       String   @unique @db.VarChar(18)
+  phone      String?  @db.VarChar(20)
+  email      String?  @db.VarChar(255)
+  address    String?
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  contracts   contracts[]
+  contracts contracts[]
 
   @@map("companies")
 }
 
 model clients {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(255)
-  cnpj_cpf    String   @db.VarChar(18)
-  contact_name String?  @db.VarChar(255)
-  contact_phone String? @db.VarChar(20)
-  contact_email String? @db.VarChar(255)
-  address     String?
-  is_active   Boolean  @default(true)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id            String   @id @default(uuid()) @db.Uuid
+  name          String   @db.VarChar(255)
+  cnpj_cpf      String   @db.VarChar(18)
+  contact_name  String?  @db.VarChar(255)
+  contact_phone String?  @db.VarChar(20)
+  contact_email String?  @db.VarChar(255)
+  address       String?
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 
-  contracts   contracts[]
+  contracts contracts[]
 
   @@map("clients")
 }
 
 model contracts {
-  id            String   @id @default(uuid()) @db.Uuid
-  client_id     String   @db.Uuid
-  company_id    String   @db.Uuid
-  contract_number String @unique @db.VarChar(50)
-  description   String?
-  
-  start_date    DateTime @db.Date
-  end_date      DateTime? @db.Date
-  renewal_date  DateTime?
-  
-  total_value   Decimal  @db.Decimal(10, 2)
-  payment_terms String?  @db.VarChar(100)
-  
-  status        String   @default("ATIVO") @db.VarChar(20)
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  id              String  @id @default(uuid()) @db.Uuid
+  client_id       String  @db.Uuid
+  company_id      String  @db.Uuid
+  contract_number String  @unique @db.VarChar(50)
+  description     String?
 
-  client        clients  @relation(fields: [client_id], references: [id])
-  company       companies @relation(fields: [company_id], references: [id])
-  work_posts    work_posts[]
+  start_date   DateTime  @db.Date
+  end_date     DateTime? @db.Date
+  renewal_date DateTime?
+
+  total_value   Decimal @db.Decimal(10, 2)
+  payment_terms String? @db.VarChar(100)
+
+  status     String   @default("ATIVO") @db.VarChar(20)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  client          clients           @relation(fields: [client_id], references: [id])
+  company         companies         @relation(fields: [company_id], references: [id])
+  work_posts      work_posts[]
   overtime_config overtime_config[]
 
   @@map("contracts")
 }
 
 model work_posts {
-  id              String   @id @default(uuid()) @db.Uuid
-  contract_id     String   @db.Uuid
-  name            String   @db.VarChar(255)
-  post_type       String   @db.VarChar(50)
-  
-  address         String?
-  latitude        Decimal? @db.Decimal(10, 8)
-  longitude       Decimal? @db.Decimal(11, 8)
-  gps_radius      Int      @default(100)
-  
-  schedule_type   String   @default("FIXO") @db.VarChar(20)
-  required_vacancies Int   @default(1)
-  
-  status          String   @default("ATIVO") @db.VarChar(20)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  id          String @id @default(uuid()) @db.Uuid
+  contract_id String @db.Uuid
+  name        String @db.VarChar(255)
+  post_type   String @db.VarChar(50)
 
-  contract        contracts @relation(fields: [contract_id], references: [id])
+  address    String?
+  latitude   Decimal? @db.Decimal(10, 8)
+  longitude  Decimal? @db.Decimal(11, 8)
+  gps_radius Int      @default(100)
+
+  schedule_type      String @default("FIXO") @db.VarChar(20)
+  required_vacancies Int    @default(1)
+
+  status     String   @default("ATIVO") @db.VarChar(20)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  contract        contracts         @relation(fields: [contract_id], references: [id])
   assignments     assignments[]
   post_schedules  post_schedules[]
   time_clocks     time_clocks[]
@@ -294,66 +279,66 @@ model work_posts {
 // ============================================================
 
 model assignments {
-  id           String   @id @default(uuid()) @db.Uuid
-  employee_id  String   @db.Uuid
-  post_id      String   @db.Uuid
-  schedule_id  String?  @db.Uuid
-  
-  start_date   DateTime @db.Date
-  end_date     DateTime?
-  
-  shift        String?  @db.VarChar(20)
-  position     String?  @db.VarChar(100)
-  
-  base_salary  Decimal? @db.Decimal(10, 2)
-  additional   Decimal? @default(0) @db.Decimal(10, 2)
-  
-  status       String   @default("ATIVA") @db.VarChar(20)
-  
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  id          String  @id @default(uuid()) @db.Uuid
+  employee_id String  @db.Uuid
+  post_id     String  @db.Uuid
+  schedule_id String? @db.Uuid
 
-  employee     employees @relation(fields: [employee_id], references: [id])
-  post         work_posts @relation(fields: [post_id], references: [id])
+  start_date DateTime  @db.Date
+  end_date   DateTime?
+
+  shift    String? @db.VarChar(20)
+  position String? @db.VarChar(100)
+
+  base_salary Decimal? @db.Decimal(10, 2)
+  additional  Decimal? @default(0) @db.Decimal(10, 2)
+
+  status String @default("ATIVA") @db.VarChar(20)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees  @relation(fields: [employee_id], references: [id])
+  post     work_posts @relation(fields: [post_id], references: [id])
 
   @@map("assignments")
 }
 
 model post_schedules {
-  id            String   @id @default(uuid()) @db.Uuid
-  post_id       String   @db.Uuid
-  name          String   @db.VarChar(100)
-  
-  start_time    String   @db.VarChar(5)
-  end_time      String   @db.VarChar(5)
-  
-  days_of_week  String   @db.VarChar(20)
-  
-  is_active     Boolean  @default(true)
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  id      String @id @default(uuid()) @db.Uuid
+  post_id String @db.Uuid
+  name    String @db.VarChar(100)
 
-  post          work_posts @relation(fields: [post_id], references: [id])
+  start_time String @db.VarChar(5)
+  end_time   String @db.VarChar(5)
+
+  days_of_week String @db.VarChar(20)
+
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  post work_posts @relation(fields: [post_id], references: [id])
 
   @@map("post_schedules")
 }
 
 model generated_schedules {
-  id            String   @id @default(uuid()) @db.Uuid
-  post_id       String   @db.Uuid
-  employee_id   String   @db.Uuid
-  
+  id          String @id @default(uuid()) @db.Uuid
+  post_id     String @db.Uuid
+  employee_id String @db.Uuid
+
   schedule_date DateTime @db.Date
   shift_name    String   @db.VarChar(50)
   start_time    String   @db.VarChar(5)
   end_time      String   @db.VarChar(5)
-  
-  status        String   @default("PROGRAMADO") @db.VarChar(20)
-  
-  time_clock_id String?  @db.Uuid
-  
-  notes         String?
-  created_at    DateTime @default(now())
+
+  status String @default("PROGRAMADO") @db.VarChar(20)
+
+  time_clock_id String? @db.Uuid
+
+  notes      String?
+  created_at DateTime @default(now())
 
   @@unique([post_id, employee_id, schedule_date])
   @@map("generated_schedules")
@@ -364,82 +349,83 @@ model generated_schedules {
 // ============================================================
 
 model time_clocks {
-  id              String   @id @default(uuid()) @db.Uuid
-  employee_id     String   @db.Uuid
-  post_id         String   @db.Uuid
-  
-  clock_type      String   @db.VarChar(20)
-  clock_time      DateTime
-  
-  latitude        Decimal? @db.Decimal(10, 8)
-  longitude       Decimal? @db.Decimal(11, 8)
-  gps_accuracy    Decimal? @db.Decimal(5, 2)
-  
-  auth_method     String?  @db.VarChar(20)
-  photo_url       String?  @db.VarChar(500)
-  
-  status          String   @default("VALIDO") @db.VarChar(20)
-  irregularity    String?
-  justification   String?
-  
-  approved_by     String?  @db.Uuid
-  approved_at     DateTime?
-  
-  source          String   @default("WEB") @db.VarChar(20)
-  
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  id          String @id @default(uuid()) @db.Uuid
+  employee_id String @db.Uuid
+  post_id     String @db.Uuid
 
-  employee        employees @relation(fields: [employee_id], references: [id])
-  post            work_posts @relation(fields: [post_id], references: [id])
-  approver        users?    @relation(fields: [approved_by], references: [id])
+  clock_type String   @db.VarChar(20)
+  clock_time DateTime
+
+  latitude     Decimal? @db.Decimal(10, 8)
+  longitude    Decimal? @db.Decimal(11, 8)
+  gps_accuracy Decimal? @db.Decimal(5, 2)
+
+  auth_method String? @db.VarChar(20)
+  photo_url   String? @db.VarChar(500)
+
+  status        String  @default("VALIDO") @db.VarChar(20)
+  irregularity  String?
+  justification String?
+
+  approved_by String?   @db.Uuid
+  approved_at DateTime?
+
+  source String @default("WEB") @db.VarChar(20)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee               employees                @relation(fields: [employee_id], references: [id])
+  post                   work_posts               @relation(fields: [post_id], references: [id])
+  approver               users?                   @relation(fields: [approved_by], references: [id])
+  time_clock_adjustments time_clock_adjustments[]
 
   @@index([employee_id, clock_time])
   @@map("time_clocks")
 }
 
 model time_clock_adjustments {
-  id            String   @id @default(uuid()) @db.Uuid
-  time_clock_id String   @db.Uuid
-  adjusted_by   String   @db.Uuid
-  
+  id            String @id @default(uuid()) @db.Uuid
+  time_clock_id String @db.Uuid
+  adjusted_by   String @db.Uuid
+
   old_clock_time DateTime?
   new_clock_time DateTime
-  reason        String
-  
-  created_at    DateTime @default(now())
+  reason         String
 
-  time_clock    time_clocks @relation(fields: [time_clock_id], references: [id])
-  adjuster      users       @relation(fields: [adjusted_by], references: [id])
+  created_at DateTime @default(now())
+
+  time_clock time_clocks @relation(fields: [time_clock_id], references: [id])
+  adjuster   users       @relation(fields: [adjusted_by], references: [id])
 
   @@map("time_clock_adjustments")
 }
 
 model time_sheets {
-  id                String   @id @default(uuid()) @db.Uuid
-  employee_id       String   @db.Uuid
-  period_start      DateTime @db.Date
-  period_end        DateTime @db.Date
-  
-  total_worked_hours    Decimal? @default(0) @db.Decimal(6, 2)
-  total_overtime_hours  Decimal? @default(0) @db.Decimal(6, 2)
-  total_night_hours     Decimal? @default(0) @db.Decimal(6, 2)
-  total_absence_days    Decimal? @default(0) @db.Decimal(4, 2)
-  total_justified_days  Decimal? @default(0) @db.Decimal(4, 2)
-  
-  overtime_value    Decimal? @default(0) @db.Decimal(10, 2)
-  night_add_value   Decimal? @default(0) @db.Decimal(10, 2)
-  
-  status            String   @default("PENDENTE") @db.VarChar(20)
-  calculated_at     DateTime?
-  approved_by       String?  @db.Uuid
-  approved_at       DateTime?
-  
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
+  id           String   @id @default(uuid()) @db.Uuid
+  employee_id  String   @db.Uuid
+  period_start DateTime @db.Date
+  period_end   DateTime @db.Date
 
-  employee          employees @relation(fields: [employee_id], references: [id])
-  approver          users?    @relation(fields: [approved_by], references: [id])
+  total_worked_hours   Decimal? @default(0) @db.Decimal(6, 2)
+  total_overtime_hours Decimal? @default(0) @db.Decimal(6, 2)
+  total_night_hours    Decimal? @default(0) @db.Decimal(6, 2)
+  total_absence_days   Decimal? @default(0) @db.Decimal(4, 2)
+  total_justified_days Decimal? @default(0) @db.Decimal(4, 2)
+
+  overtime_value  Decimal? @default(0) @db.Decimal(10, 2)
+  night_add_value Decimal? @default(0) @db.Decimal(10, 2)
+
+  status        String    @default("PENDENTE") @db.VarChar(20)
+  calculated_at DateTime?
+  approved_by   String?   @db.Uuid
+  approved_at   DateTime?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees @relation(fields: [employee_id], references: [id])
+  approver users?    @relation(fields: [approved_by], references: [id])
 
   @@unique([employee_id, period_start, period_end])
   @@map("time_sheets")
@@ -450,31 +436,31 @@ model time_sheets {
 // ============================================================
 
 model payroll_periods {
-  id            String   @id @default(uuid()) @db.Uuid
+  id              String @id @default(uuid()) @db.Uuid
   reference_month Int
   reference_year  Int
-  type          String   @db.VarChar(20)
-  
-  start_date    DateTime @db.Date
-  end_date      DateTime @db.Date
-  
-  status        String   @default("ABERTO") @db.VarChar(20)
-  processed_at  DateTime?
-  
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  type            String @db.VarChar(20)
 
-  payrolls      payrolls[]
+  start_date DateTime @db.Date
+  end_date   DateTime @db.Date
+
+  status       String    @default("ABERTO") @db.VarChar(20)
+  processed_at DateTime?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  payrolls payrolls[]
 
   @@unique([reference_month, reference_year, type])
   @@map("payroll_periods")
 }
 
 model payrolls {
-  id              String   @id @default(uuid()) @db.Uuid
-  period_id       String   @db.Uuid
-  employee_id     String   @db.Uuid
-  
+  id          String @id @default(uuid()) @db.Uuid
+  period_id   String @db.Uuid
+  employee_id String @db.Uuid
+
   base_salary     Decimal  @db.Decimal(10, 2)
   overtime_hours  Decimal? @default(0) @db.Decimal(6, 2)
   overtime_value  Decimal? @default(0) @db.Decimal(10, 2)
@@ -483,7 +469,7 @@ model payrolls {
   hazardous_pay   Decimal? @default(0) @db.Decimal(10, 2)
   unhealthy_pay   Decimal? @default(0) @db.Decimal(10, 2)
   other_additions Decimal? @default(0) @db.Decimal(10, 2)
-  
+
   inss_deduction    Decimal? @default(0) @db.Decimal(10, 2)
   irrf_deduction    Decimal? @default(0) @db.Decimal(10, 2)
   fsf_deduction     Decimal? @default(0) @db.Decimal(10, 2)
@@ -493,42 +479,42 @@ model payrolls {
   dental_plan       Decimal? @default(0) @db.Decimal(10, 2)
   other_deductions  Decimal? @default(0) @db.Decimal(10, 2)
   advance_deduction Decimal? @default(0) @db.Decimal(10, 2)
-  
-  gross_total     Decimal? @default(0) @db.Decimal(10, 2)
-  deductions_total Decimal? @default(0) @db.Decimal(10, 2)
-  net_total       Decimal? @default(0) @db.Decimal(10, 2)
-  
-  fgts_base       Decimal? @default(0) @db.Decimal(10, 2)
-  fgts_value      Decimal? @default(0) @db.Decimal(10, 2)
-  inss_base       Decimal? @default(0) @db.Decimal(10, 2)
-  irrf_base       Decimal? @default(0) @db.Decimal(10, 2)
-  
-  status          String   @default("PENDENTE") @db.VarChar(20)
-  payment_date    DateTime? @db.Date
-  payment_method  String?  @db.VarChar(50)
-  
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
 
-  period          payroll_periods @relation(fields: [period_id], references: [id])
-  employee        employees @relation(fields: [employee_id], references: [id])
-  benefits        payroll_benefits[]
+  gross_total      Decimal? @default(0) @db.Decimal(10, 2)
+  deductions_total Decimal? @default(0) @db.Decimal(10, 2)
+  net_total        Decimal? @default(0) @db.Decimal(10, 2)
+
+  fgts_base  Decimal? @default(0) @db.Decimal(10, 2)
+  fgts_value Decimal? @default(0) @db.Decimal(10, 2)
+  inss_base  Decimal? @default(0) @db.Decimal(10, 2)
+  irrf_base  Decimal? @default(0) @db.Decimal(10, 2)
+
+  status         String    @default("PENDENTE") @db.VarChar(20)
+  payment_date   DateTime? @db.Date
+  payment_method String?   @db.VarChar(50)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  period   payroll_periods    @relation(fields: [period_id], references: [id])
+  employee employees          @relation(fields: [employee_id], references: [id])
+  benefits payroll_benefits[]
 
   @@unique([period_id, employee_id])
   @@map("payrolls")
 }
 
 model payroll_benefits {
-  id              String   @id @default(uuid()) @db.Uuid
-  payroll_id      String   @db.Uuid
-  benefit_type    String   @db.VarChar(50)
-  description     String?  @db.VarChar(255)
-  amount          Decimal  @db.Decimal(10, 2)
-  quantity        Decimal? @default(1) @db.Decimal(6, 2)
-  total           Decimal  @db.Decimal(10, 2)
-  created_at      DateTime @default(now())
+  id           String   @id @default(uuid()) @db.Uuid
+  payroll_id   String   @db.Uuid
+  benefit_type String   @db.VarChar(50)
+  description  String?  @db.VarChar(255)
+  amount       Decimal  @db.Decimal(10, 2)
+  quantity     Decimal? @default(1) @db.Decimal(6, 2)
+  total        Decimal  @db.Decimal(10, 2)
+  created_at   DateTime @default(now())
 
-  payroll         payrolls @relation(fields: [payroll_id], references: [id], onDelete: Cascade)
+  payroll payrolls @relation(fields: [payroll_id], references: [id], onDelete: Cascade)
 
   @@map("payroll_benefits")
 }
@@ -538,23 +524,23 @@ model payroll_benefits {
 // ============================================================
 
 model overtime_config {
-  id              String   @id @default(uuid()) @db.Uuid
-  
-  contract_id     String?  @db.Uuid
-  post_id         String?  @db.Uuid
-  
-  fixed_value     Decimal  @db.Decimal(10, 2)
-  max_per_month   Int      @default(3)
-  
-  payment_type    String   @db.VarChar(20)
-  
-  is_active       Boolean  @default(true)
-  
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  id String @id @default(uuid()) @db.Uuid
 
-  contract        contracts? @relation(fields: [contract_id], references: [id])
-  post            work_posts? @relation(fields: [post_id], references: [id])
+  contract_id String? @db.Uuid
+  post_id     String? @db.Uuid
+
+  fixed_value   Decimal @db.Decimal(10, 2)
+  max_per_month Int     @default(3)
+
+  payment_type String @db.VarChar(20)
+
+  is_active Boolean @default(true)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  contract contracts?  @relation(fields: [contract_id], references: [id])
+  post     work_posts? @relation(fields: [post_id], references: [id])
 
   @@map("overtime_config")
 }
@@ -564,46 +550,46 @@ model overtime_config {
 // ============================================================
 
 model extra_payroll {
-  id                String   @id @default(uuid()) @db.Uuid
-  
-  employee_id       String   @db.Uuid
-  post_id           String   @db.Uuid
-  
-  reference_month   Int
-  reference_year    Int
-  period            String   @db.VarChar(2)
-  
-  period_start      DateTime @db.Date
-  period_end        DateTime @db.Date
-  
-  overtime_hours_50   Decimal? @default(0) @db.Decimal(6, 2)
-  overtime_hours_100  Decimal? @default(0) @db.Decimal(6, 2)
-  total_hours         Decimal? @default(0) @db.Decimal(6, 2)
-  
-  fixed_value       Decimal  @db.Decimal(10, 2)
-  total_shifts      Int      @default(0)
-  gross_value       Decimal  @db.Decimal(10, 2)
-  
-  payment_date      DateTime @db.Date
-  payment_method    String?  @default("DEPOSITO") @db.VarChar(20)
-  payment_status    String?  @default("PENDENTE") @db.VarChar(20)
-  paid_at           DateTime?
-  payment_proof     String?  @db.VarChar(500)
-  
-  status            String   @default("CALCULADO") @db.VarChar(20)
-  supervisor_id     String?  @db.Uuid
-  supervisor_approved_at DateTime?
-  dp_rh_id          String?  @db.Uuid
-  dp_rh_approved_at DateTime?
-  
-  notes             String?
-  
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
+  id String @id @default(uuid()) @db.Uuid
 
-  employee          employees @relation(fields: [employee_id], references: [id])
-  post              work_posts @relation(fields: [post_id], references: [id])
-  items             extra_payroll_items[]
+  employee_id String @db.Uuid
+  post_id     String @db.Uuid
+
+  reference_month Int
+  reference_year  Int
+  period          String @db.VarChar(2)
+
+  period_start DateTime @db.Date
+  period_end   DateTime @db.Date
+
+  overtime_hours_50  Decimal? @default(0) @db.Decimal(6, 2)
+  overtime_hours_100 Decimal? @default(0) @db.Decimal(6, 2)
+  total_hours        Decimal? @default(0) @db.Decimal(6, 2)
+
+  fixed_value  Decimal @db.Decimal(10, 2)
+  total_shifts Int     @default(0)
+  gross_value  Decimal @db.Decimal(10, 2)
+
+  payment_date   DateTime  @db.Date
+  payment_method String?   @default("DEPOSITO") @db.VarChar(20)
+  payment_status String?   @default("PENDENTE") @db.VarChar(20)
+  paid_at        DateTime?
+  payment_proof  String?   @db.VarChar(500)
+
+  status                 String    @default("CALCULADO") @db.VarChar(20)
+  supervisor_id          String?   @db.Uuid
+  supervisor_approved_at DateTime?
+  dp_rh_id               String?   @db.Uuid
+  dp_rh_approved_at      DateTime?
+
+  notes String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees             @relation(fields: [employee_id], references: [id])
+  post     work_posts            @relation(fields: [post_id], references: [id])
+  items    extra_payroll_items[]
 
   @@index([employee_id])
   @@index([reference_year, reference_month, period])
@@ -613,24 +599,24 @@ model extra_payroll {
 }
 
 model extra_payroll_items {
-  id                String   @id @default(uuid()) @db.Uuid
-  extra_payroll_id  String   @db.Uuid
-  
-  work_date         DateTime @db.Date
-  
-  start_time        DateTime
-  end_time          DateTime
-  hours_worked      Decimal  @db.Decimal(5, 2)
-  
-  overtime_type     String?  @db.VarChar(10)
-  reason            String?  @db.VarChar(100)
-  
-  fixed_value       Decimal  @db.Decimal(8, 2)
-  total_value       Decimal  @db.Decimal(10, 2)
-  
-  created_at        DateTime @default(now())
+  id               String @id @default(uuid()) @db.Uuid
+  extra_payroll_id String @db.Uuid
 
-  extra_payroll     extra_payroll @relation(fields: [extra_payroll_id], references: [id], onDelete: Cascade)
+  work_date DateTime @db.Date
+
+  start_time   DateTime
+  end_time     DateTime
+  hours_worked Decimal  @db.Decimal(5, 2)
+
+  overtime_type String? @db.VarChar(10)
+  reason        String? @db.VarChar(100)
+
+  fixed_value Decimal @db.Decimal(8, 2)
+  total_value Decimal @db.Decimal(10, 2)
+
+  created_at DateTime @default(now())
+
+  extra_payroll extra_payroll @relation(fields: [extra_payroll_id], references: [id], onDelete: Cascade)
 
   @@map("extra_payroll_items")
 }
@@ -640,27 +626,27 @@ model extra_payroll_items {
 // ============================================================
 
 model trainings {
-  id            String   @id @default(uuid()) @db.Uuid
-  employee_id   String   @db.Uuid
-  
-  name          String   @db.VarChar(255)
-  category      String   @db.VarChar(50)
-  provider      String?  @db.VarChar(255)
-  workload      Int?
-  
-  start_date    DateTime @db.Date
-  end_date      DateTime?
-  expiry_date   DateTime?
-  
+  id          String @id @default(uuid()) @db.Uuid
+  employee_id String @db.Uuid
+
+  name     String  @db.VarChar(255)
+  category String  @db.VarChar(50)
+  provider String? @db.VarChar(255)
+  workload Int?
+
+  start_date  DateTime  @db.Date
+  end_date    DateTime?
+  expiry_date DateTime?
+
   certificate_number String? @db.VarChar(100)
   certificate_url    String? @db.VarChar(500)
-  
-  status        String   @default("CONCLUIDO") @db.VarChar(20)
-  
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
 
-  employee      employees @relation(fields: [employee_id], references: [id])
+  status String @default("CONCLUIDO") @db.VarChar(20)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees @relation(fields: [employee_id], references: [id])
 
   @@map("trainings")
 }
@@ -670,29 +656,29 @@ model trainings {
 // ============================================================
 
 model asos {
-  id              String   @id @default(uuid()) @db.Uuid
-  employee_id     String   @db.Uuid
-  
-  type            String   @db.VarChar(50)
-  exam_date       DateTime @db.Date
-  expiry_date     DateTime?
-  
-  doctor_name     String?  @db.VarChar(255)
-  doctor_crm      String?  @db.VarChar(20)
-  clinic_name     String?  @db.VarChar(255)
-  
-  result          String   @db.VarChar(20)
-  restrictions    String?
-  
-  document_url    String?  @db.VarChar(500)
-  
-  status          String   @default("VALIDO") @db.VarChar(20)
-  is_mandatory    Boolean  @default(true)
-  
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  id          String @id @default(uuid()) @db.Uuid
+  employee_id String @db.Uuid
 
-  employee        employees @relation(fields: [employee_id], references: [id])
+  type        String    @db.VarChar(50)
+  exam_date   DateTime  @db.Date
+  expiry_date DateTime?
+
+  doctor_name String? @db.VarChar(255)
+  doctor_crm  String? @db.VarChar(20)
+  clinic_name String? @db.VarChar(255)
+
+  result       String  @db.VarChar(20)
+  restrictions String?
+
+  document_url String? @db.VarChar(500)
+
+  status       String  @default("VALIDO") @db.VarChar(20)
+  is_mandatory Boolean @default(true)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees @relation(fields: [employee_id], references: [id])
 
   @@map("asos")
 }
@@ -702,39 +688,39 @@ model asos {
 // ============================================================
 
 model uniforms {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(255)
-  category        String   @db.VarChar(50)
-  size_options    Json?
-  unit_cost       Decimal? @db.Decimal(8, 2)
-  stock_quantity  Int      @default(0)
-  min_stock       Int      @default(10)
-  supplier        String?  @db.VarChar(255)
-  is_active       Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  id             String   @id @default(uuid()) @db.Uuid
+  name           String   @db.VarChar(255)
+  category       String   @db.VarChar(50)
+  size_options   Json?
+  unit_cost      Decimal? @db.Decimal(8, 2)
+  stock_quantity Int      @default(0)
+  min_stock      Int      @default(10)
+  supplier       String?  @db.VarChar(255)
+  is_active      Boolean  @default(true)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
-  issued          uniforms_issued[]
+  issued uniforms_issued[]
 
   @@map("uniforms")
 }
 
 model uniforms_issued {
-  id              String   @id @default(uuid()) @db.Uuid
-  uniform_id      String   @db.Uuid
-  employee_id     String   @db.Uuid
-  
-  size            String?  @db.VarChar(10)
-  quantity        Int      @default(1)
-  issue_date      DateTime @db.Date
-  return_date     DateTime?
-  
-  status          String   @default("ENTREGUE") @db.VarChar(20)
-  
-  created_at      DateTime @default(now())
+  id          String @id @default(uuid()) @db.Uuid
+  uniform_id  String @db.Uuid
+  employee_id String @db.Uuid
 
-  uniform         uniforms @relation(fields: [uniform_id], references: [id])
-  employee        employees @relation(fields: [employee_id], references: [id])
+  size        String?   @db.VarChar(10)
+  quantity    Int       @default(1)
+  issue_date  DateTime  @db.Date
+  return_date DateTime?
+
+  status String @default("ENTREGUE") @db.VarChar(20)
+
+  created_at DateTime @default(now())
+
+  uniform  uniforms  @relation(fields: [uniform_id], references: [id])
+  employee employees @relation(fields: [employee_id], references: [id])
 
   @@map("uniforms_issued")
 }
@@ -744,45 +730,45 @@ model uniforms_issued {
 // ============================================================
 
 model vehicles {
-  id              String   @id @default(uuid()) @db.Uuid
-  plate           String   @unique @db.VarChar(10)
-  model           String   @db.VarChar(100)
-  brand           String?  @db.VarChar(100)
-  year            Int?
-  color           String?  @db.VarChar(50)
-  
-  fuel_type       String?  @db.VarChar(20)
-  km_current      Int?
-  
+  id    String  @id @default(uuid()) @db.Uuid
+  plate String  @unique @db.VarChar(10)
+  model String  @db.VarChar(100)
+  brand String? @db.VarChar(100)
+  year  Int?
+  color String? @db.VarChar(50)
+
+  fuel_type  String? @db.VarChar(20)
+  km_current Int?
+
   insurance_expiry DateTime? @db.Date
   licensing_expiry DateTime? @db.Date
-  
-  status          String   @default("ATIVO") @db.VarChar(20)
-  
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
 
-  assignments     vehicle_assignments[]
+  status String @default("ATIVO") @db.VarChar(20)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  assignments vehicle_assignments[]
 
   @@map("vehicles")
 }
 
 model vehicle_assignments {
-  id              String   @id @default(uuid()) @db.Uuid
-  vehicle_id      String   @db.Uuid
-  employee_id     String   @db.Uuid
-  
-  start_date      DateTime @db.Date
-  end_date        DateTime?
-  
-  is_primary      Boolean  @default(false)
-  
-  status          String   @default("ATIVA") @db.VarChar(20)
-  
-  created_at      DateTime @default(now())
+  id          String @id @default(uuid()) @db.Uuid
+  vehicle_id  String @db.Uuid
+  employee_id String @db.Uuid
 
-  vehicle         vehicles @relation(fields: [vehicle_id], references: [id])
-  employee        employees @relation(fields: [employee_id], references: [id])
+  start_date DateTime  @db.Date
+  end_date   DateTime?
+
+  is_primary Boolean @default(false)
+
+  status String @default("ATIVA") @db.VarChar(20)
+
+  created_at DateTime @default(now())
+
+  vehicle  vehicles  @relation(fields: [vehicle_id], references: [id])
+  employee employees @relation(fields: [employee_id], references: [id])
 
   @@map("vehicle_assignments")
 }
@@ -792,24 +778,24 @@ model vehicle_assignments {
 // ============================================================
 
 model occurrences {
-  id              String   @id @default(uuid()) @db.Uuid
-  employee_id     String?  @db.Uuid
-  post_id         String?  @db.Uuid
-  
-  type            String   @db.VarChar(50)
-  description     String
-  
+  id          String  @id @default(uuid()) @db.Uuid
+  employee_id String? @db.Uuid
+  post_id     String? @db.Uuid
+
+  type        String @db.VarChar(50)
+  description String
+
   occurrence_date DateTime @db.Date
   severity        String?  @db.VarChar(20)
-  
-  registered_by   String   @db.Uuid
-  
-  status          String   @default("REGISTRADA") @db.VarChar(20)
-  
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
 
-  employee        employees? @relation(fields: [employee_id], references: [id])
+  registered_by String @db.Uuid
+
+  status String @default("REGISTRADA") @db.VarChar(20)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees? @relation(fields: [employee_id], references: [id])
 
   @@map("occurrences")
 }
@@ -819,47 +805,47 @@ model occurrences {
 // ============================================================
 
 model vacations {
-  id              String   @id @default(uuid()) @db.Uuid
-  employee_id     String   @db.Uuid
-  
-  start_date      DateTime @db.Date
-  end_date        DateTime @db.Date
-  
-  days_taken      Int
-  days_remaining  Int?
-  
-  status          String   @default("PROGRAMADO") @db.VarChar(20)
-  
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  id          String @id @default(uuid()) @db.Uuid
+  employee_id String @db.Uuid
 
-  employee        employees @relation(fields: [employee_id], references: [id])
+  start_date DateTime @db.Date
+  end_date   DateTime @db.Date
+
+  days_taken     Int
+  days_remaining Int?
+
+  status String @default("PROGRAMADO") @db.VarChar(20)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees @relation(fields: [employee_id], references: [id])
 
   @@map("vacations")
 }
 
 model leaves {
-  id              String   @id @default(uuid()) @db.Uuid
-  employee_id     String   @db.Uuid
-  
-  type            String   @db.VarChar(50)
-  start_date      DateTime @db.Date
-  end_date        DateTime?
-  
-  days            Int?
-  justification   String?
-  
-  document_url    String?  @db.VarChar(500)
-  
-  status          String   @default("PENDENTE") @db.VarChar(20)
-  
-  approved_by     String?  @db.Uuid
-  approved_at     DateTime?
-  
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  id          String @id @default(uuid()) @db.Uuid
+  employee_id String @db.Uuid
 
-  employee        employees @relation(fields: [employee_id], references: [id])
+  type       String    @db.VarChar(50)
+  start_date DateTime  @db.Date
+  end_date   DateTime?
+
+  days          Int?
+  justification String?
+
+  document_url String? @db.VarChar(500)
+
+  status String @default("PENDENTE") @db.VarChar(20)
+
+  approved_by String?   @db.Uuid
+  approved_at DateTime?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees @relation(fields: [employee_id], references: [id])
 
   @@map("leaves")
 }
