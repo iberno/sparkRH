@@ -6,6 +6,9 @@ import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
 import { FirstAccessPage } from './pages/auth/FirstAccessPage';
 import { ChangePasswordPage } from './pages/auth/ChangePasswordPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
+import { UsersListPage } from './pages/users/UsersListPage';
+import { UserFormPage } from './pages/users/UserFormPage';
+import { AuditLogsPage } from './pages/audit/AuditLogsPage';
 import { AppLayout } from './components/layout/AppLayout';
 import { AuthLayout } from './components/layout/AuthLayout';
 import { useAuthStore } from './stores/authStore';
@@ -38,6 +41,11 @@ function AppRoutes() {
       >
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
+        <Route path="/users" element={<UsersListPage />} />
+        <Route path="/users/new" element={<UserFormPage />} />
+        <Route path="/users/:id" element={<UserFormPage />} />
+        <Route path="/users/:id/edit" element={<UserFormPage />} />
+        <Route path="/audit" element={<AuditLogsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>

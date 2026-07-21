@@ -46,18 +46,18 @@
 ## Fase 2 — Usuários (Admin)
 
 ### Backend
-- [ ] `GET /users` — Listar usuários (paginado)
-- [ ] `POST /users` — Criar usuário
-- [ ] `GET /users/:id` — Buscar usuário
-- [ ] `PUT /users/:id` — Atualizar usuário
-- [ ] `DELETE /users/:id` — Desativar usuário (soft delete)
-- [ ] `PUT /users/:id/permissions` — Atualizar permissões
-- [ ] Audit logs CRUD
+- [x] `GET /users` — Listar usuários (paginado)
+- [x] `POST /users` — Criar usuário
+- [x] `GET /users/:id` — Buscar usuário
+- [x] `PUT /users/:id` — Atualizar usuário
+- [x] `DELETE /users/:id` — Desativar usuário (soft delete)
+- [x] `PUT /users/:id/permissions` — Atualizar permissões
+- [x] Audit logs CRUD
 
 ### Frontend
-- [ ] Página Listagem Usuários (tabela + paginação)
-- [ ] Página Criar/Editar Usuário
-- [ ] Logs de Auditoria
+- [x] Página Listagem Usuários (tabela + paginação)
+- [x] Página Criar/Editar Usuário
+- [x] Logs de Auditoria
 
 ---
 

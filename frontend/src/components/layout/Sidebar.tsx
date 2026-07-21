@@ -44,6 +44,8 @@ const navItems: NavItem[] = [
   { label: 'Férias', href: '/vacations', icon: Plane },
   { label: 'Benefícios', href: '/benefits', icon: Gift },
   { label: 'Relatórios', href: '/reports', icon: BarChart3 },
+  { label: 'Usuários', href: '/users', icon: Users },
+  { label: 'Auditoria', href: '/audit', icon: Shield },
   { label: 'Configurações', href: '/settings', icon: Settings },
 ];
 
