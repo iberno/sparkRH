@@ -117,14 +117,26 @@ export function ScheduleGeneratePage() {
                     onChange={setPostId}
                     placeholder="Selecione o posto"
                   />
-                   <PrelineSelect
-                    label="Modelo de Escala *"
-                    options={templateOptions}
-                    value={templateId}
-                    onChange={setTemplateId}
-                    placeholder={postId ? "Selecione o modelo" : "Selecione um posto primeiro"}
-                    disabled={!postId}
-                  />
+                   <div>
+                    <label className="block mb-2 text-sm font-medium dark:text-spark-dark-text text-spark-dark">
+                      Modelo de Escala *
+                    </label>
+                    <select
+                      value={templateId}
+                      onChange={(e) => setTemplateId(e.target.value)}
+                      disabled={!postId}
+                      className="py-2.5 px-4 ps-3 pe-10 block w-full border rounded-lg text-sm
+                        focus:outline-none focus:ring-2 focus:ring-spark-primary focus:border-spark-primary
+                        disabled:opacity-50 disabled:pointer-events-none
+                        dark:bg-spark-dark-bg dark:text-spark-dark-text dark:border-spark-dark-border
+                        bg-gray-50 text-spark-dark border-gray-200"
+                    >
+                      <option value="">{postId ? "Selecione o modelo" : "Selecione um posto primeiro"}</option>
+                      {templateOptions.map((t) => (
+                        <option key={t.value} value={t.value}>{t.label}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   <Input
