@@ -3,17 +3,17 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Shield } from 'lucide-react';
+import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
 import { loginSchema, type LoginFormData } from '../../lib/validators';
 import { formatCpf } from '../../lib/formatters';
-import { Button, Input, Alert } from '../../components/ui';
+import { Button, Input } from '../../components/ui';
 import { ThemeToggle } from '../../components/layout';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((state) => state.setAuth);
-  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -26,7 +26,6 @@ export function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      setError('');
       setIsLoading(true);
       const response = await api.post('/auth/login', {
         cpf: data.cpf,
@@ -36,7 +35,7 @@ export function LoginPage() {
       setAuth(access_token, refresh_token, user);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao fazer login');
+      toast.error(err.response?.data?.message || 'Erro ao fazer login');
     } finally {
       setIsLoading(false);
     }
@@ -60,8 +59,6 @@ export function LoginPage() {
 
       <div className="dark:bg-spark-dark-surface bg-white border dark:border-spark-dark-border border-gray-200 shadow-2xs rounded-xl p-4 sm:p-7">
         <form onSubmit={handleSubmit(onSubmit)}>
-          {error && <Alert variant="error" className="mb-4">{error}</Alert>}
-
           <div className="mb-4">
             <Input
               label="CPF"

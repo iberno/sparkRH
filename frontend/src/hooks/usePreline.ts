@@ -6,6 +6,10 @@ declare global {
     HSStaticMethods?: {
       autoInit: () => void;
     };
+    HSSelect?: {
+      getInstance: (el: HTMLElement | string) => any;
+      autoInit: () => void;
+    };
   }
 }
 
@@ -15,6 +19,7 @@ export function usePreline() {
   useEffect(() => {
     const timer = setTimeout(() => {
       window.HSStaticMethods?.autoInit();
+      window.HSSelect?.autoInit();
     }, 100);
 
     return () => clearTimeout(timer);

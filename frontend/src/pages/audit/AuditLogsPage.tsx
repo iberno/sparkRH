@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { History, ChevronDown, ChevronUp } from 'lucide-react';
+import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Card, CardContent, Badge, Pagination, Spinner, Alert } from '../../components/ui';
+import { Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
 
 interface AuditLog {
   id: string;
@@ -38,7 +39,6 @@ export function AuditLogsPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [meta, setMeta] = useState({ total: 0, page: 1, limit: 20, totalPages: 0 });
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
   const [entityFilter, setEntityFilter] = useState('');
   const [actionFilter, setActionFilter] = useState('');
   const [expandedLog, setExpandedLog] = useState<string | null>(null);
@@ -55,7 +55,7 @@ export function AuditLogsPage() {
       setLogs(response.data.data);
       setMeta(response.data.meta);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao carregar logs');
+      toast.error(err.response?.data?.message || 'Erro ao carregar logs');
     } finally {
       setIsLoading(false);
     }
@@ -95,39 +95,39 @@ export function AuditLogsPage() {
         subtitle="Histórico de ações realizadas no sistema"
       />
 
-      {error && <Alert variant="error" className="mb-4">{error}</Alert>}
-
       <Card>
         <CardContent>
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="w-full sm:w-48">
-              <select
+              <PrelineSelect
+                options={[
+                  { value: '', label: 'Todas as entidades' },
+                  { value: 'users', label: 'Usuários' },
+                  { value: 'employees', label: 'Colaboradores' },
+                  { value: 'contracts', label: 'Contratos' },
+                  { value: 'posts', label: 'Postos' },
+                  { value: 'scales', label: 'Escalas' },
+                  { value: 'time_clocks', label: 'Ponto' },
+                ]}
                 value={entityFilter}
-                onChange={(e) => setEntityFilter(e.target.value)}
-                className="w-full h-[38px] px-3 py-2 text-sm dark:bg-spark-dark-bg bg-gray-50 dark:text-spark-dark-text text-spark-dark dark:border-spark-dark-border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-spark-primary"
-              >
-                <option value="">Todas as entidades</option>
-                <option value="users">Usuários</option>
-                <option value="employees">Colaboradores</option>
-                <option value="contracts">Contratos</option>
-                <option value="posts">Postos</option>
-                <option value="scales">Escalas</option>
-                <option value="time_clocks">Ponto</option>
-              </select>
+                onChange={setEntityFilter}
+                placeholder="Todas as entidades"
+              />
             </div>
             <div className="w-full sm:w-48">
-              <select
+              <PrelineSelect
+                options={[
+                  { value: '', label: 'Todas as ações' },
+                  { value: 'CREATE', label: 'Criação' },
+                  { value: 'UPDATE', label: 'Atualização' },
+                  { value: 'DELETE', label: 'Exclusão' },
+                  { value: 'LOGIN', label: 'Login' },
+                ]}
                 value={actionFilter}
-                onChange={(e) => setActionFilter(e.target.value)}
-                className="w-full h-[38px] px-3 py-2 text-sm dark:bg-spark-dark-bg bg-gray-50 dark:text-spark-dark-text text-spark-dark dark:border-spark-dark-border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-spark-primary"
-              >
-                <option value="">Todas as ações</option>
-                <option value="CREATE">Criação</option>
-                <option value="UPDATE">Atualização</option>
-                <option value="DELETE">Exclusão</option>
-                <option value="LOGIN">Login</option>
-              </select>
+                onChange={setActionFilter}
+                placeholder="Todas as ações"
+              />
             </div>
           </div>
 

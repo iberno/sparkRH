@@ -24,13 +24,76 @@
   --color-spark-dark-text: #c5d0e6;
 }
 
-/* Select dropdown dark mode fix */
-.dark select option {
-  background-color: #0a1229;
-  color: #c5d0e6;
+/* ============================================================
+   Toastify — Spark Theme
+   ============================================================ */
+
+/* Base toast */
+.spark-toast {
+  background: #111d3a !important;
+  color: #c5d0e6 !important;
+  border: 1px solid #1a2a4d !important;
+  border-radius: 0.5rem !important;
+  font-family: "Poppins", sans-serif !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
 }
 
-select option {
-  background-color: #ffffff;
-  color: #1d2736;
+/* Progress bar base */
+.spark-toast-progress {
+  background: #e32321 !important;
+  border-radius: 0 0 0 0.5rem !important;
+}
+
+/* Success */
+.spark-toast.Toastify__toast--success {
+  border-left: 4px solid #22c55e !important;
+}
+.spark-toast.Toastify__toast--success ~ .spark-toast-progress,
+.Toastify__toast--success .spark-toast-progress {
+  background: #22c55e !important;
+}
+
+/* Error */
+.spark-toast.Toastify__toast--error {
+  border-left: 4px solid #ef4444 !important;
+}
+.spark-toast.Toastify__toast--error ~ .spark-toast-progress,
+.Toastify__toast--error .spark-toast-progress {
+  background: #ef4444 !important;
+}
+
+/* Warning */
+.spark-toast.Toastify__toast--warning {
+  border-left: 4px solid #f59e0b !important;
+}
+.spark-toast.Toastify__toast--warning ~ .spark-toast-progress,
+.Toastify__toast--warning .spark-toast-progress {
+  background: #f59e0b !important;
+}
+
+/* Info */
+.spark-toast.Toastify__toast--info {
+  border-left: 4px solid #3b82f6 !important;
+}
+.spark-toast.Toastify__toast--info ~ .spark-toast-progress,
+.Toastify__toast--info .spark-toast-progress {
+  background: #3b82f6 !important;
+}
+
+/* Close button */
+.spark-toast .Toastify__close-button {
+  color: #c5d0e6 !important;
+  opacity: 0.6 !important;
+  margin-top: 4px;
+}
+.spark-toast .Toastify__close-button:hover {
+  opacity: 1 !important;
+}
+
+/* Toast body text */
+.spark-toast .Toastify__toast-body {
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }

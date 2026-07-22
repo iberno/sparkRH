@@ -3,10 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Save, ArrowLeft } from 'lucide-react';
+import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { ROLES } from '../../lib/constants';
 import { PageHeader } from '../../components/custom';
-import { Button, Input, Card, CardContent, Alert, Spinner } from '../../components/ui';
+import { Button, Input, Card, CardContent, Spinner, PrelineSelect } from '../../components/ui';
 import { z } from 'zod';
 
 const userSchema = z.object({
@@ -34,12 +35,12 @@ export function UserFormPage() {
   const [employees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
     reset,
   } = useForm<UserFormData>({
@@ -78,7 +79,7 @@ export function UserFormPage() {
         employeeId: user.employee_id || '',
       });
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao carregar usuário');
+      toast.error(err.response?.data?.message || 'Erro ao carregar usuário');
     } finally {
       setIsLoading(false);
     }
@@ -87,8 +88,6 @@ export function UserFormPage() {
   const onSubmit = async (data: UserFormData) => {
     try {
       setIsSaving(true);
-      setError('');
-      setSuccess('');
 
       const payload = {
         cpf: data.cpf.replace(/\D/g, ''),
@@ -100,14 +99,14 @@ export function UserFormPage() {
 
       if (isEditing) {
         await api.put(`/users/${id}`, payload);
-        setSuccess('Usuário atualizado com sucesso!');
+        toast.success('Usuário atualizado com sucesso!');
       } else {
         await api.post('/users', payload);
-        setSuccess('Usuário criado com sucesso!');
+        toast.success('Usuário criado com sucesso!');
         setTimeout(() => navigate('/users'), 1500);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao salvar usuário');
+      toast.error(err.response?.data?.message || 'Erro ao salvar usuário');
     } finally {
       setIsSaving(false);
     }
@@ -137,9 +136,6 @@ export function UserFormPage() {
       <div className="max-w-2xl mx-auto">
         <Card>
           <CardContent>
-            {error && <Alert variant="error" className="mb-4">{error}</Alert>}
-            {success && <Alert variant="success" className="mb-4">{success}</Alert>}
-
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div>
@@ -176,36 +172,25 @@ export function UserFormPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-medium dark:text-white text-spark-dark mb-1">
-                    Perfil
-                  </label>
-                  <select
-                    {...register('role')}
-                    className="w-full h-[38px] px-3 py-2 text-sm dark:bg-spark-dark-bg bg-gray-50 dark:text-spark-dark-text text-spark-dark dark:border-spark-dark-border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-spark-primary"
-                  >
-                    {Object.entries(ROLES).map(([key, label]) => (
-                      <option key={key} value={key}>{label}</option>
-                    ))}
-                  </select>
-                  {errors.role && (
-                    <p className="text-sm text-red-500 mt-1">{errors.role.message}</p>
-                  )}
+                  <PrelineSelect
+                    label="Perfil"
+                    options={Object.entries(ROLES).map(([key, label]) => ({ value: key, label }))}
+                    value={watch('role')}
+                    onChange={(val) => setValue('role', val)}
+                    error={errors.role?.message}
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium dark:text-white text-spark-dark mb-1">
-                    Colaborador (opcional)
-                  </label>
-                  <select
-                    {...register('employeeId')}
-                    className="w-full h-[38px] px-3 py-2 text-sm dark:bg-spark-dark-bg bg-gray-50 dark:text-spark-dark-text text-spark-dark dark:border-spark-dark-border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-spark-primary"
-                  >
-                    <option value="">Nenhum</option>
-                    {employees.map((emp) => (
-                      <option key={emp.id} value={emp.id}>
-                        {emp.full_name} ({emp.registration_number})
-                      </option>
-                    ))}
-                  </select>
+                  <PrelineSelect
+                    label="Colaborador (opcional)"
+                    options={employees.map((emp) => ({
+                      value: emp.id,
+                      label: `${emp.full_name} (${emp.registration_number})`,
+                    }))}
+                    value={watch('employeeId')}
+                    onChange={(val) => setValue('employeeId', val)}
+                    placeholder="Nenhum"
+                  />
                 </div>
               </div>
 

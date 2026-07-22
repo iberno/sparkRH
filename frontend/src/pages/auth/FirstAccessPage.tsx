@@ -3,11 +3,12 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Shield, ArrowLeft } from 'lucide-react';
+import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
 import { cpfSchema } from '../../lib/validators';
 import { formatCpf } from '../../lib/formatters';
-import { Button, Input, Alert } from '../../components/ui';
+import { Button, Input } from '../../components/ui';
 import { ThemeToggle } from '../../components/layout';
 import { z } from 'zod';
 
@@ -33,7 +34,6 @@ export function FirstAccessPage() {
   const setAuth = useAuthStore((state) => state.setAuth);
   const [step, setStep] = useState<'request' | 'set-password'>('request');
   const [cpf, setCpf] = useState('');
-  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const requestForm = useForm<{ cpf: string }>({
@@ -46,13 +46,12 @@ export function FirstAccessPage() {
 
   const onRequestCode = async (data: { cpf: string }) => {
     try {
-      setError('');
       setIsLoading(true);
       await api.post('/auth/first-access-code', { cpf: data.cpf });
       setCpf(data.cpf);
       setStep('set-password');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao solicitar código');
+      toast.error(err.response?.data?.message || 'Erro ao solicitar código');
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +59,6 @@ export function FirstAccessPage() {
 
   const onSetPassword = async (data: FirstAccessFormData) => {
     try {
-      setError('');
       setIsLoading(true);
       const response = await api.post('/auth/first-access', {
         cpf: data.cpf,
@@ -71,7 +69,7 @@ export function FirstAccessPage() {
       setAuth(access_token, refresh_token, user);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao definir senha');
+      toast.error(err.response?.data?.message || 'Erro ao definir senha');
     } finally {
       setIsLoading(false);
     }
@@ -98,8 +96,6 @@ export function FirstAccessPage() {
       <div className="dark:bg-spark-dark-surface bg-white border dark:border-spark-dark-border border-gray-200 shadow-2xs rounded-xl p-4 sm:p-7">
         {step === 'request' ? (
           <form onSubmit={requestForm.handleSubmit(onRequestCode)}>
-            {error && <Alert variant="error" className="mb-4">{error}</Alert>}
-
             <div className="mb-4">
               <Input
                 label="CPF"
@@ -119,8 +115,6 @@ export function FirstAccessPage() {
           </form>
         ) : (
           <form onSubmit={passwordForm.handleSubmit(onSetPassword)}>
-            {error && <Alert variant="error" className="mb-4">{error}</Alert>}
-
             <div className="mb-4">
               <Input
                 label="CPF"

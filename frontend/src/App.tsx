@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { LoginPage } from './pages/auth/LoginPage';
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
@@ -9,6 +11,9 @@ import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { UsersListPage } from './pages/users/UsersListPage';
 import { UserFormPage } from './pages/users/UserFormPage';
 import { AuditLogsPage } from './pages/audit/AuditLogsPage';
+import { EmployeesListPage } from './pages/employees/EmployeesListPage';
+import { EmployeeFormPage } from './pages/employees/EmployeeFormPage';
+import { EmployeeDetailPage } from './pages/employees/EmployeeDetailPage';
 import { AppLayout } from './components/layout/AppLayout';
 import { AuthLayout } from './components/layout/AuthLayout';
 import { useAuthStore } from './stores/authStore';
@@ -45,6 +50,10 @@ function AppRoutes() {
         <Route path="/users/new" element={<UserFormPage />} />
         <Route path="/users/:id" element={<UserFormPage />} />
         <Route path="/users/:id/edit" element={<UserFormPage />} />
+        <Route path="/employees" element={<EmployeesListPage />} />
+        <Route path="/employees/new" element={<EmployeeFormPage />} />
+        <Route path="/employees/:id" element={<EmployeeDetailPage />} />
+        <Route path="/employees/:id/edit" element={<EmployeeFormPage />} />
         <Route path="/audit" element={<AuditLogsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/login" />} />
@@ -58,6 +67,16 @@ function App() {
       <Router>
         <AppRoutes />
       </Router>
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        theme="dark"
+        toastClassName="spark-toast"
+        progressClassName="spark-toast-progress"
+      />
     </QueryClientProvider>
   );
 }

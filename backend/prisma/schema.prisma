@@ -178,6 +178,9 @@ model employees {
   vacations           vacations[]
   leaves              leaves[]
   extra_payroll       extra_payroll[]
+  emergency_contacts  emergency_contacts[]
+  documents           employee_documents[]
+  hour_bank_entries   hour_bank[]
 
   @@index([cpf])
   @@map("employees")
@@ -848,4 +851,75 @@ model leaves {
   employee employees @relation(fields: [employee_id], references: [id])
 
   @@map("leaves")
+}
+
+// ============================================================
+// Module: Emergency Contacts
+// ============================================================
+
+model emergency_contacts {
+  id          String  @id @default(uuid()) @db.Uuid
+  employee_id String  @db.Uuid
+  name        String  @db.VarChar(255)
+  phone       String  @db.VarChar(20)
+  relationship String @db.VarChar(50)
+  is_primary  Boolean @default(false)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+
+  @@map("emergency_contacts")
+}
+
+// ============================================================
+// Module: Employee Documents
+// ============================================================
+
+model employee_documents {
+  id          String    @id @default(uuid()) @db.Uuid
+  employee_id String    @db.Uuid
+  type        String    @db.VarChar(50)
+  name        String    @db.VarChar(255)
+  file_name   String    @db.VarChar(255)
+  file_path   String    @db.VarChar(500)
+  file_size   Int?
+  mime_type   String?   @db.VarChar(100)
+  expiry_date DateTime?
+  notes       String?
+
+  status String @default("ATIVO") @db.VarChar(20)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+
+  @@index([employee_id, type])
+  @@map("employee_documents")
+}
+
+// ============================================================
+// Module: Hour Bank (Banco de Horas)
+// ============================================================
+
+model hour_bank {
+  id          String    @id @default(uuid()) @db.Uuid
+  employee_id String    @db.Uuid
+  type        String    @db.VarChar(20)
+  hours       Decimal   @db.Decimal(5, 2)
+  description String?   @db.VarChar(255)
+  reference_date DateTime @db.Date
+  balance     Decimal   @db.Decimal(6, 2)
+  expires_at  DateTime?
+
+  status String @default("VALIDO") @db.VarChar(20)
+
+  created_at DateTime @default(now())
+
+  employee employees @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+
+  @@index([employee_id, reference_date])
+  @@map("hour_bank")
 }

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Lock, CheckCircle } from 'lucide-react';
+import { Lock } from 'lucide-react';
+import { toast } from 'react-toastify';
 import api from '../../lib/api';
-import { Button, Input, Alert } from '../../components/ui';
+import { Button, Input } from '../../components/ui';
 import { z } from 'zod';
 
 const changePasswordSchema = z.object({
@@ -23,8 +24,6 @@ const changePasswordSchema = z.object({
 type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;
 
 export function ChangePasswordPage() {
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -38,16 +37,15 @@ export function ChangePasswordPage() {
 
   const onSubmit = async (data: ChangePasswordFormData) => {
     try {
-      setError('');
       setIsLoading(true);
       await api.put('/auth/change-password', {
         currentPassword: data.currentPassword,
         newPassword: data.newPassword,
       });
-      setSuccess(true);
+      toast.success('Senha alterada com sucesso!');
       reset();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao alterar senha');
+      toast.error(err.response?.data?.message || 'Erro ao alterar senha');
     } finally {
       setIsLoading(false);
     }
@@ -61,18 +59,7 @@ export function ChangePasswordPage() {
 
       <div className="max-w-md">
         <div className="dark:bg-spark-dark-surface bg-white border dark:border-spark-dark-border border-gray-200 shadow-2xs rounded-xl p-4 sm:p-7">
-          {success && (
-            <Alert variant="success" className="mb-4">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="size-4" />
-                Senha alterada com sucesso!
-              </div>
-            </Alert>
-          )}
-
           <form onSubmit={handleSubmit(onSubmit)}>
-            {error && <Alert variant="error" className="mb-4">{error}</Alert>}
-
             <div className="mb-4">
               <Input
                 type="password"

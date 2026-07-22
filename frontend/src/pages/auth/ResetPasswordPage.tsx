@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Shield, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Shield, ArrowLeft } from 'lucide-react';
+import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { cpfSchema } from '../../lib/validators';
 import { formatCpf } from '../../lib/formatters';
-import { Button, Input, Alert } from '../../components/ui';
+import { Button, Input } from '../../components/ui';
 import { ThemeToggle } from '../../components/layout';
 import { z } from 'zod';
 
@@ -28,8 +29,6 @@ const resetPasswordSchema = z.object({
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 export function ResetPasswordPage() {
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -42,48 +41,19 @@ export function ResetPasswordPage() {
 
   const onSubmit = async (data: ResetPasswordFormData) => {
     try {
-      setError('');
       setIsLoading(true);
       await api.post('/auth/reset-password', {
         cpf: data.cpf,
         code: data.code,
         newPassword: data.newPassword,
       });
-      setSuccess(true);
+      toast.success('Senha redefinida com sucesso!');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao redefinir senha');
+      toast.error(err.response?.data?.message || 'Erro ao redefinir senha');
     } finally {
       setIsLoading(false);
     }
   };
-
-  if (success) {
-    return (
-      <div className="w-full max-w-md px-4">
-        <ThemeToggle className="absolute top-4 right-4" />
-
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center size-12 rounded-xl bg-green-500 mb-4">
-            <CheckCircle className="size-6 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold dark:text-white text-spark-dark font-heading">
-            Senha Redefinida
-          </h1>
-          <p className="mt-2 dark:text-spark-dark-text text-spark-gray">
-            Sua senha foi redefinida com sucesso.
-          </p>
-        </div>
-
-        <div className="dark:bg-spark-dark-surface bg-white border dark:border-spark-dark-border border-gray-200 shadow-2xs rounded-xl p-4 sm:p-7">
-          <Link to="/login" className="block text-center">
-            <Button className="w-full">
-              Fazer Login
-            </Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full max-w-md px-4">
@@ -103,8 +73,6 @@ export function ResetPasswordPage() {
 
       <div className="dark:bg-spark-dark-surface bg-white border dark:border-spark-dark-border border-gray-200 shadow-2xs rounded-xl p-4 sm:p-7">
         <form onSubmit={handleSubmit(onSubmit)}>
-          {error && <Alert variant="error" className="mb-4">{error}</Alert>}
-
           <div className="mb-4">
             <Input
               label="CPF"
