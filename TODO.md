@@ -141,20 +141,24 @@
 ## Fase 7 — Módulos Complementares
 
 ### Backend
-- [ ] Treinamentos (O.S., certificados, validade)
-- [ ] Veículos (alocação em postos)
+- [x] Treinamentos (CRUD + vencimentos + stats)
+- [x] Veículos (CRUD + alertas IPVA/seguro + stats)
+- [x] Motoristas (CRUD + CNH/CFC alertas + stats)
+- [x] ASO (CRUD + vencimentos + stats)
+- [x] Ocorrências (CRUD + resolver + stats)
+- [x] Dashboard unificado (KPIs + alertas vencidos)
 - [ ] Equipamentos (arma, colete, algema, etc.)
-- [ ] ASO (atestado de saúde ocupacional)
 - [ ] Comunicação interna (notificações)
-- [ ] Dashboard unificado (KPIs)
 
 ### Frontend
-- [ ] Página Treinamentos
-- [ ] Página Veículos
+- [x] Página Treinamentos (list + form)
+- [x] Página Veículos (list + form)
+- [x] Página Motoristas (list + form)
+- [x] Página ASO (list + form)
+- [x] Página Ocorrências (list + form)
+- [x] Dashboard com KPIs reais + alertas
 - [ ] Página Equipamentos
-- [ ] Página ASO
 - [ ] Página Comunicação
-- [ ] Dashboard com KPIs reais
 
 ---
 
@@ -208,6 +212,8 @@
 9. `546b8b7` — Select UI fix (dark mode, form center)
 10. `8301682` — 500 error fix (page/limit Number, exclude password_hash)
 11. `b6448aa` — Fase 3 Colaboradores + PrelineSelect + Toastify spark theme
+12. `829c04b` — docs: atualizar TODO.md com Fase 3 concluida e commits
+13. `c95a7ee` — Fase 7 Treinamentos, ASO, Ocorrências, Veículos, Motoristas, Dashboard
 
 ---
 
