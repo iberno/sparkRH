@@ -82,18 +82,21 @@
 ## Fase 4 — Contratos & Postos
 
 ### Backend
-- [ ] CRUD Contratos (tipo, vigência, valores)
-- [ ] CRUD Postos de Trabalho (endereço, horário, escalas)
-- [ ] Alocação de colaboradores em postos
-- [ ] Escalas por padrão (fixed/rotating)
-- [ ] Contratos colaborador-posto
+- [x] CRUD Contratos (tipo, vigência, valores, status flow)
+- [x] CRUD Postos de Trabalho (endereço, código único, GPS, escalas)
+- [x] Alocação de colaboradores em postos (validação conflitos/vagas)
+- [x] Escalas por padrão (post_schedules com is_default)
+- [x] CRUD Clientes (soft delete, tipo JURIDICA/FISICA)
+- [x] Empresas (trade_name adicionado)
 
 ### Frontend
-- [ ] Página Listagem Contratos
-- [ ] Página Criar/Editar Contrato
-- [ ] Página Listagem Postos
-- [ ] Página Criar/Editar Posto
-- [ ] Alocação de colaboradores
+- [x] Página Listagem Contratos
+- [x] Página Criar/Editar Contrato
+- [x] Página Listagem Postos
+- [x] Página Criar/Editar Posto
+- [x] Página Listagem Clientes
+- [x] Página Criar/Editar Cliente
+- [x] Página Alocação de Colaboradores
 
 ---
 
@@ -214,6 +217,8 @@
 11. `b6448aa` — Fase 3 Colaboradores + PrelineSelect + Toastify spark theme
 12. `829c04b` — docs: atualizar TODO.md com Fase 3 concluida e commits
 13. `c95a7ee` — Fase 7 Treinamentos, ASO, Ocorrências, Veículos, Motoristas, Dashboard
+14. `807848c` — fix: separar DriversController em /drivers
+15. `c86bb1a` — Fase 4 Contratos, Postos, Clientes, Alocações
 
 ---
 
