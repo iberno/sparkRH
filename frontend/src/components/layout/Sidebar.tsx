@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -18,43 +19,137 @@ import {
   BarChart3,
   Settings,
   X,
+  ChevronDown,
+  Briefcase,
+  HandCoins,
+  MapPin,
 } from 'lucide-react';
 
 interface NavItem {
   label: string;
-  href?: string;
+  href: string;
   icon: React.ElementType;
-  children?: { label: string; href: string }[];
 }
 
-const navItems: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Colaboradores', href: '/employees', icon: Users },
-  { label: 'Clientes', href: '/clients', icon: Building2 },
-  { label: 'Contratos', href: '/contracts', icon: FileText },
-  { label: 'Postos', href: '/work-posts', icon: Shield },
-  { label: 'Alocações', href: '/assignments', icon: Users },
-  { label: 'Escalas', href: '/schedules', icon: Calendar },
-  { label: 'Ponto', href: '/time-clocks', icon: Clock },
-  { label: 'Folha de Pagamento', href: '/payroll', icon: DollarSign },
-  { label: 'HE Porteiros', href: '/extra-payroll', icon: Clock },
-  { label: 'Treinamentos', href: '/trainings', icon: GraduationCap },
-  { label: 'ASO', href: '/asos', icon: Heart },
-  { label: 'Uniformes', href: '/uniforms', icon: Shield },
-  { label: 'Veículos', href: '/vehicles', icon: Car },
-  { label: 'Motoristas', href: '/drivers', icon: Bike },
-  { label: 'Ocorrências', href: '/occurrences', icon: AlertTriangle },
-  { label: 'Férias', href: '/vacations', icon: Plane },
-  { label: 'Benefícios', href: '/benefits', icon: Gift },
-  { label: 'Relatórios', href: '/reports', icon: BarChart3 },
-  { label: 'Usuários', href: '/users', icon: Users },
-  { label: 'Auditoria', href: '/audit', icon: Shield },
-  { label: 'Configurações', href: '/settings', icon: Settings },
+interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
+  {
+    title: 'Principal',
+    items: [
+      { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    ],
+  },
+  {
+    title: 'Gestão de Pessoas',
+    items: [
+      { label: 'Colaboradores', href: '/employees', icon: Users },
+      { label: 'Treinamentos', href: '/trainings', icon: GraduationCap },
+      { label: 'ASO', href: '/asos', icon: Heart },
+      { label: 'Férias', href: '/vacations', icon: Plane },
+      { label: 'Benefícios', href: '/benefits', icon: Gift },
+    ],
+  },
+  {
+    title: 'Comercial',
+    items: [
+      { label: 'Clientes', href: '/clients', icon: Building2 },
+      { label: 'Contratos', href: '/contracts', icon: FileText },
+    ],
+  },
+  {
+    title: 'Operacional',
+    items: [
+      { label: 'Postos', href: '/work-posts', icon: MapPin },
+      { label: 'Alocações', href: '/assignments', icon: Briefcase },
+      { label: 'Escalas', href: '/schedules', icon: Calendar },
+      { label: 'Ponto', href: '/time-clocks', icon: Clock },
+    ],
+  },
+  {
+    title: 'Financeiro',
+    items: [
+      { label: 'Folha de Pagamento', href: '/payroll', icon: DollarSign },
+      { label: 'HE Porteiros', href: '/extra-payroll', icon: HandCoins },
+    ],
+  },
+  {
+    title: 'Logística',
+    items: [
+      { label: 'Veículos', href: '/vehicles', icon: Car },
+      { label: 'Motoristas', href: '/drivers', icon: Bike },
+      { label: 'Uniformes', href: '/uniforms', icon: Shield },
+    ],
+  },
+  {
+    title: 'Monitoramento',
+    items: [
+      { label: 'Ocorrências', href: '/occurrences', icon: AlertTriangle },
+    ],
+  },
+  {
+    title: 'Administração',
+    items: [
+      { label: 'Relatórios', href: '/reports', icon: BarChart3 },
+      { label: 'Usuários', href: '/users', icon: Users },
+      { label: 'Auditoria', href: '/audit', icon: Shield },
+      { label: 'Configurações', href: '/settings', icon: Settings },
+    ],
+  },
 ];
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+}
+
+function GroupSection({ group, pathname, onClose }: { group: NavGroup; pathname: string; onClose: () => void }) {
+  const isGroupActive = group.items.some((item) => pathname.startsWith(item.href));
+  const [isOpen, setIsOpen] = useState(isGroupActive);
+
+  return (
+    <li>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors ${
+          isGroupActive
+            ? 'text-spark-primary'
+            : 'text-white/40 hover:text-white/60'
+        }`}
+      >
+        <span>{group.title}</span>
+        <ChevronDown
+          className={`size-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {isOpen && (
+        <ul className="mt-0.5 space-y-0.5">
+          {group.items.map((item) => {
+            const isActive = pathname.startsWith(item.href);
+            return (
+              <li key={item.href}>
+                <Link
+                  to={item.href}
+                  onClick={onClose}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                    isActive
+                      ? 'bg-spark-primary text-white'
+                      : 'text-white/70 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <item.icon className="size-4 shrink-0" />
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </li>
+  );
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
@@ -86,34 +181,16 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           </button>
         </div>
 
-        <nav className="p-4 overflow-y-auto h-[calc(100%-4rem)]">
-          <ul className="space-y-1">
-            {navItems.map((item) => {
-              const isActive = item.href && location.pathname.startsWith(item.href);
-              return (
-                <li key={item.label}>
-                  {item.href ? (
-                    <Link
-                      to={item.href}
-                      onClick={onClose}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                        isActive
-                          ? 'bg-spark-primary text-white'
-                          : 'text-white/70 hover:bg-white/10 hover:text-white'
-                      }`}
-                    >
-                      <item.icon className="size-4 shrink-0" />
-                      <span>{item.label}</span>
-                    </Link>
-                  ) : (
-                    <div className="flex items-center gap-3 px-3 py-2 text-sm text-white/50">
-                      <item.icon className="size-4 shrink-0" />
-                      <span>{item.label}</span>
-                    </div>
-                  )}
-                </li>
-              );
-            })}
+        <nav className="p-3 overflow-y-auto h-[calc(100%-4rem)]">
+          <ul className="space-y-2">
+            {navGroups.map((group) => (
+              <GroupSection
+                key={group.title}
+                group={group}
+                pathname={location.pathname}
+                onClose={onClose}
+              />
+            ))}
           </ul>
         </nav>
       </aside>
