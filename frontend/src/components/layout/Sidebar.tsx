@@ -38,12 +38,6 @@ interface NavGroup {
 
 const navGroups: NavGroup[] = [
   {
-    title: 'Principal',
-    items: [
-      { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    ],
-  },
-  {
     title: 'Gestão de Pessoas',
     items: [
       { label: 'Colaboradores', href: '/employees', icon: Users },
@@ -183,6 +177,20 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         <nav className="p-3 overflow-y-auto h-[calc(100%-4rem)]">
           <ul className="space-y-2">
+            <li>
+              <Link
+                to="/dashboard"
+                onClick={onClose}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                  location.pathname.startsWith('/dashboard')
+                    ? 'bg-spark-primary text-white'
+                    : 'text-white/70 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <LayoutDashboard className="size-4 shrink-0" />
+                <span>Dashboard</span>
+              </Link>
+            </li>
             {navGroups.map((group) => (
               <GroupSection
                 key={group.title}

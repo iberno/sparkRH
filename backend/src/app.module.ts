@@ -14,6 +14,10 @@ import { AsosModule } from './asos/asos.module';
 import { OccurrencesModule } from './occurrences/occurrences.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { SchedulesModule } from './schedules/schedules.module';
+import { TimeClocksModule } from './time-clocks/time-clocks.module';
+import { TimeSheetsModule } from './time-sheets/time-sheets.module';
+import { OvertimeModule } from './overtime/overtime.module';
 
 @Module({
   imports: [
@@ -34,6 +38,10 @@ import { DashboardModule } from './dashboard/dashboard.module';
     OccurrencesModule,
     VehiclesModule,
     DashboardModule,
+    SchedulesModule,
+    TimeClocksModule,
+    TimeSheetsModule,
+    OvertimeModule,
   ],
 })
 export class AppModule {}

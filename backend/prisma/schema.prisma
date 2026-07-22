@@ -33,6 +33,7 @@ model users {
   time_clocks_approved   time_clocks[]
   time_clock_adjustments time_clock_adjustments[]
   time_sheets_approved   time_sheets[]
+  overtime_reviews       overtime_requests[]
 
   @@index([cpf])
   @@map("users")
@@ -182,6 +183,8 @@ model employees {
   emergency_contacts  emergency_contacts[]
   documents           employee_documents[]
   hour_bank_entries   hour_bank[]
+  overtime_requests   overtime_requests[]
+  generated_schedules generated_schedules[]
 
   @@index([cpf])
   @@map("employees")
@@ -292,8 +295,10 @@ model work_posts {
   contract        contracts         @relation(fields: [contract_id], references: [id])
   assignments     assignments[]
   post_schedules  post_schedules[]
+  generated_schedules generated_schedules[]
   time_clocks     time_clocks[]
   overtime_config overtime_config[]
+  overtime_requests overtime_requests[]
   extra_payroll   extra_payroll[]
 
   @@map("work_posts")
@@ -339,6 +344,10 @@ model post_schedules {
 
   days_of_week String @db.VarChar(20)
 
+  schedule_type String @default("FIXA") @db.VarChar(20) // FIXA, ROTATIVA, ANOTADA
+  rotation_pattern String? @db.VarChar(20) // 4x2, 5x1, 6x1 etc
+  rotation_offset  Int? @default(0)
+
   is_default Boolean @default(false)
   is_active  Boolean @default(true)
   created_at DateTime @default(now())
@@ -365,6 +374,9 @@ model generated_schedules {
 
   notes      String?
   created_at DateTime @default(now())
+
+  employee employees @relation(fields: [employee_id], references: [id])
+  post     work_posts @relation(fields: [post_id], references: [id])
 
   @@unique([post_id, employee_id, schedule_date])
   @@map("generated_schedules")
@@ -569,6 +581,33 @@ model overtime_config {
   post     work_posts? @relation(fields: [post_id], references: [id])
 
   @@map("overtime_config")
+}
+
+model overtime_requests {
+  id          String  @id @default(uuid()) @db.Uuid
+  employee_id String  @db.Uuid
+  post_id     String  @db.Uuid
+
+  request_date  DateTime @db.Date
+  start_time    String   @db.VarChar(5)
+  end_time      String   @db.VarChar(5)
+  total_hours   Decimal  @db.Decimal(6, 2)
+  overtime_type String   @db.VarChar(20) // HE50, HE100, ADICIONAL_NOTURNO
+
+  reason      String?
+  status      String @default("PENDENTE") @db.VarChar(20) // PENDENTE, APROVADO, REJEITADO
+  reviewed_by String?   @db.Uuid
+  reviewed_at DateTime?
+  review_note String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees @relation(fields: [employee_id], references: [id])
+  post     work_posts @relation(fields: [post_id], references: [id])
+  reviewer users?     @relation(fields: [reviewed_by], references: [id])
+
+  @@map("overtime_requests")
 }
 
 // ============================================================

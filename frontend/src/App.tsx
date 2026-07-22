@@ -32,6 +32,16 @@ import { VehiclesListPage } from './pages/vehicles/VehiclesListPage';
 import { VehicleFormPage } from './pages/vehicles/VehicleFormPage';
 import { DriversListPage } from './pages/vehicles/DriversListPage';
 import { DriverFormPage } from './pages/vehicles/DriverFormPage';
+import { SchedulesListPage } from './pages/schedules/SchedulesListPage';
+import { ScheduleFormPage } from './pages/schedules/ScheduleFormPage';
+import { ScheduleGeneratePage } from './pages/schedules/ScheduleGeneratePage';
+import { TimeClocksListPage } from './pages/time-clocks/TimeClocksListPage';
+import { TimeClockRegisterPage } from './pages/time-clocks/TimeClockRegisterPage';
+import { TimeClockIrregularitiesPage } from './pages/time-clocks/TimeClockIrregularitiesPage';
+import { OvertimeListPage } from './pages/overtime/OvertimeListPage';
+import { OvertimeFormPage } from './pages/overtime/OvertimeFormPage';
+import { TimeSheetsListPage } from './pages/time-sheets/TimeSheetsListPage';
+import { TimeSheetCalculatePage } from './pages/time-sheets/TimeSheetCalculatePage';
 import { AppLayout } from './components/layout/AppLayout';
 import { AuthLayout } from './components/layout/AuthLayout';
 import { useAuthStore } from './stores/authStore';
@@ -99,6 +109,17 @@ function AppRoutes() {
         <Route path="/drivers" element={<DriversListPage />} />
         <Route path="/drivers/new" element={<DriverFormPage />} />
         <Route path="/drivers/:id/edit" element={<DriverFormPage />} />
+        <Route path="/schedules" element={<SchedulesListPage />} />
+        <Route path="/schedules/new" element={<ScheduleFormPage />} />
+        <Route path="/schedules/generate" element={<ScheduleGeneratePage />} />
+        <Route path="/schedules/:id/edit" element={<ScheduleFormPage />} />
+        <Route path="/time-clocks" element={<TimeClocksListPage />} />
+        <Route path="/time-clocks/register" element={<TimeClockRegisterPage />} />
+        <Route path="/time-clocks/irregularities" element={<TimeClockIrregularitiesPage />} />
+        <Route path="/overtime" element={<OvertimeListPage />} />
+        <Route path="/overtime/new" element={<OvertimeFormPage />} />
+        <Route path="/time-sheets" element={<TimeSheetsListPage />} />
+        <Route path="/time-sheets/calculate" element={<TimeSheetCalculatePage />} />
         <Route path="/audit" element={<AuditLogsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/login" />} />

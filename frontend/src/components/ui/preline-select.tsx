@@ -91,10 +91,31 @@ export const PrelineSelect = forwardRef<HTMLSelectElement, PrelineSelectProps>(
       if (!el) return;
 
       let instance: any = null;
+      let destroyed = false;
 
-      const timer = setTimeout(() => {
-        instance = window.HSSelect?.getInstance(el);
-      }, 150);
+      const reinit = () => {
+        if (destroyed) return;
+        try {
+          instance = window.HSSelect?.getInstance(el);
+          if (instance) {
+            instance.destroy();
+            instance = null;
+          }
+        } catch { /* ignore */ }
+
+        el.removeAttribute('data-hs-select');
+
+        requestAnimationFrame(() => {
+          if (destroyed) return;
+          el.setAttribute('data-hs-select', hsSelectConfig);
+          try {
+            window.HSSelect?.autoInit();
+            instance = window.HSSelect?.getInstance(el);
+          } catch { /* ignore */ }
+        });
+      };
+
+      const timer = setTimeout(reinit, 30);
 
       const handleChange = (e: Event) => {
         const target = e.target as HTMLSelectElement;
@@ -104,13 +125,12 @@ export const PrelineSelect = forwardRef<HTMLSelectElement, PrelineSelectProps>(
       el.addEventListener('change', handleChange);
 
       return () => {
+        destroyed = true;
         clearTimeout(timer);
         el.removeEventListener('change', handleChange);
         try {
           instance?.destroy?.();
-        } catch {
-          // Ignore cleanup errors
-        }
+        } catch { /* ignore */ }
       };
     }, [options, onChange]);
 

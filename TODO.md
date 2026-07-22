@@ -103,20 +103,20 @@
 ## Fase 5 — Escalas & Ponto
 
 ### Backend
-- [ ] CRUD Escalas (templates)
-- [ ] Escala fixa (mesma escala todo mês)
-- [ ] Escala rotativa (4x2, 5x1, etc.)
-- [ ] Escala anotada (mista fixa+rotativa)
-- [ ] Registro de ponto (app mobile)
-- [ ] Aprovação de horas extras
-- [ ] Cálculo automático de HE
+- [x] CRUD Escalas (templates)
+- [x] Escala fixa (mesma escala todo mês)
+- [x] Escala rotativa (4x2, 5x1, etc.)
+- [x] Escala anotada (mista fixa+rotativa)
+- [x] Registro de ponto (app mobile)
+- [x] Aprovação de horas extras
+- [x] Cálculo automático de HE
 
 ### Frontend
-- [ ] Página Escalas
-- [ ] Página Criar/Editar Escala
-- [ ] Calendário de escalas
-- [ ] Registro de ponto (mobile-first)
-- [ ] Aprovação de HE
+- [x] Página Escalas
+- [x] Página Criar/Editar Escala
+- [x] Calendário de escalas
+- [x] Registro de ponto (mobile-first)
+- [x] Aprovação de HE
 
 ---
 
