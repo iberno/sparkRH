@@ -4,7 +4,7 @@ import { FileText, Plus, Search, Edit, Eye, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect, ConfirmModal } from '../../components/ui';
 
 interface Contract {
   id: string;
@@ -42,6 +42,9 @@ export function ContractsListPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [confirmName, setConfirmName] = useState('');
 
   const fetchContracts = async () => {
     try {
@@ -66,15 +69,18 @@ export function ContractsListPage() {
     fetchContracts();
   }, [page, search, statusFilter]);
 
-  const handleDelete = async (id: string, number: string) => {
-    if (!confirm(`Tem certeza que deseja excluir o contrato ${number}?`)) return;
-
+  const handleDelete = async () => {
+    if (!confirmId) return;
     try {
-      await api.delete(`/contracts/${id}`);
+      await api.delete(`/contracts/${confirmId}`);
       toast.success('Contrato excluído com sucesso!');
       fetchContracts();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Erro ao excluir contrato');
+    } finally {
+      setConfirmOpen(false);
+      setConfirmId(null);
+      setConfirmName('');
     }
   };
 
@@ -211,7 +217,7 @@ export function ContractsListPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDelete(contract.id, contract.contract_number)}
+                              onClick={() => { setConfirmId(contract.id); setConfirmName(contract.contract_number); setConfirmOpen(true); }}
                               className="text-red-500 hover:text-red-600"
                             >
                               <Trash2 className="size-4" />
@@ -237,6 +243,15 @@ export function ContractsListPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setConfirmId(null); setConfirmName(''); }}
+        onConfirm={handleDelete}
+        title="Confirmar exclusão"
+        message={`Tem certeza que deseja excluir o contrato ${confirmName}?`}
+        variant="danger"
+      />
     </div>
   );
 }

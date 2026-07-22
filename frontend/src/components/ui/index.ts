@@ -2,6 +2,8 @@ export { Button } from './button';
 export { Input } from './input';
 export { Select } from './select';
 export { PrelineSelect } from './preline-select';
+export { DatePicker } from './date-picker';
+export { ConfirmModal } from './confirm-modal';
 export { Card, CardHeader, CardContent } from './card';
 export { Badge } from './badge';
 export { Alert } from './alert';

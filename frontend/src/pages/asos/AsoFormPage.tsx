@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import api from '../../lib/api';
 import { PageHeader } from '../../components/custom';
-import { Button, Input, Card, CardContent, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Spinner, PrelineSelect, DatePicker } from '../../components/ui';
 
 const asoSchema = z.object({
   employee_id: z.string().min(1, 'Colaborador é obrigatório'),
@@ -185,16 +185,16 @@ export function AsoFormPage() {
                   />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <Input
+                  <DatePicker
                     label="Data do Exame *"
-                    type="date"
+                    value={watch('exam_date')}
+                    onChange={(val) => setValue('exam_date', val)}
                     error={errors.exam_date?.message}
-                    {...register('exam_date')}
                   />
-                  <Input
+                  <DatePicker
                     label="Data de Validade"
-                    type="date"
-                    {...register('expiry_date')}
+                    value={watch('expiry_date')}
+                    onChange={(val) => setValue('expiry_date', val)}
                   />
                   <PrelineSelect
                     label="Resultado *"

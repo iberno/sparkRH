@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import api from '../../lib/api';
 import { PageHeader } from '../../components/custom';
-import { Button, Input, Card, CardContent, Spinner } from '../../components/ui';
+import { Button, Input, Card, CardContent, Spinner, DatePicker } from '../../components/ui';
 import { PrelineSelect } from '../../components/ui/preline-select';
 import { EMPLOYEE_STATUS } from '../../lib/constants';
 
@@ -283,11 +283,11 @@ export function EmployeeFormPage() {
                     />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <Input
+                    <DatePicker
                       label="Data de Nascimento *"
-                      type="date"
+                      value={watch('birth_date')}
+                      onChange={(val) => setValue('birth_date', val)}
                       error={errors.birth_date?.message}
-                      {...register('birth_date')}
                     />
                     <PrelineSelect
                       label="Gênero"
@@ -352,11 +352,11 @@ export function EmployeeFormPage() {
                       {...register('ctps_state')}
                     />
                   </div>
-                  <Input
+                  <DatePicker
                     label="Data de Admissão *"
-                    type="date"
+                    value={watch('admission_date')}
+                    onChange={(val) => setValue('admission_date', val)}
                     error={errors.admission_date?.message}
-                    {...register('admission_date')}
                   />
                 </div>
               )}

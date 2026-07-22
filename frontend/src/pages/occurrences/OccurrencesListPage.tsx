@@ -4,7 +4,7 @@ import { AlertTriangle, Plus, Search, Edit, Trash2, Eye } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect, ConfirmModal } from '../../components/ui';
 
 interface Occurrence {
   id: string;
@@ -64,6 +64,8 @@ export function OccurrencesListPage() {
   const [typeFilter, setTypeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const fetchOccurrences = async () => {
     try {
@@ -89,15 +91,17 @@ export function OccurrencesListPage() {
     fetchOccurrences();
   }, [page, search, typeFilter, statusFilter]);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir esta ocorrência?')) return;
-
+  const handleDelete = async () => {
+    if (!confirmId) return;
     try {
-      await api.delete(`/occurrences/${id}`);
+      await api.delete(`/occurrences/${confirmId}`);
       toast.success('Ocorrência excluída com sucesso!');
       fetchOccurrences();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Erro ao excluir ocorrência');
+    } finally {
+      setConfirmOpen(false);
+      setConfirmId(null);
     }
   };
 
@@ -245,7 +249,7 @@ export function OccurrencesListPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDelete(occ.id)}
+                              onClick={() => { setConfirmId(occ.id); setConfirmOpen(true); }}
                               className="text-red-500 hover:text-red-600"
                             >
                               <Trash2 className="size-4" />
@@ -271,6 +275,15 @@ export function OccurrencesListPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setConfirmId(null); }}
+        onConfirm={handleDelete}
+        title="Confirmar exclusão"
+        message="Tem certeza que deseja excluir esta ocorrência?"
+        variant="danger"
+      />
     </div>
   );
 }

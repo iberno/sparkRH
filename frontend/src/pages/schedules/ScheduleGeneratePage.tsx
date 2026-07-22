@@ -4,7 +4,7 @@ import { ArrowLeft, Calendar } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader } from '../../components/custom';
-import { Button, Input, Card, CardContent, PrelineSelect } from '../../components/ui';
+import { Button, Card, CardContent, PrelineSelect, DatePicker } from '../../components/ui';
 
 interface PostOption { id: string; name: string; code: string }
 interface EmployeeOption { id: string; full_name: string; registration_number: string }
@@ -139,17 +139,15 @@ export function ScheduleGeneratePage() {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                  <Input
+                  <DatePicker
                     label="Data Início *"
-                    type="date"
                     value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
+                    onChange={setStartDate}
                   />
-                  <Input
+                  <DatePicker
                     label="Data Fim *"
-                    type="date"
                     value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
+                    onChange={setEndDate}
                   />
                 </div>
               </div>

@@ -4,7 +4,7 @@ import { Calculator, ArrowLeft } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader } from '../../components/custom';
-import { Button, Input, Card, CardContent, PrelineSelect } from '../../components/ui';
+import { Button, Card, CardContent, PrelineSelect, DatePicker } from '../../components/ui';
 
 interface EmployeeOption { id: string; full_name: string; registration_number: string }
 
@@ -82,17 +82,15 @@ export function TimeSheetCalculatePage() {
                   placeholder="Selecione o colaborador"
                 />
                 <div className="grid grid-cols-2 gap-4">
-                  <Input
+                  <DatePicker
                     label="Data Início *"
-                    type="date"
                     value={periodStart}
-                    onChange={(e) => setPeriodStart(e.target.value)}
+                    onChange={setPeriodStart}
                   />
-                  <Input
+                  <DatePicker
                     label="Data Fim *"
-                    type="date"
                     value={periodEnd}
-                    onChange={(e) => setPeriodEnd(e.target.value)}
+                    onChange={setPeriodEnd}
                   />
                 </div>
               </div>

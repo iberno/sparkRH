@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import api from '../../lib/api';
 import { PageHeader } from '../../components/custom';
-import { Button, Input, Card, CardContent, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Card, CardContent, Spinner, PrelineSelect, DatePicker } from '../../components/ui';
 
 const occurrenceSchema = z.object({
   employee_id: z.string().optional().or(z.literal('')),
@@ -175,11 +175,11 @@ export function OccurrenceFormPage() {
                   />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Input
+                  <DatePicker
                     label="Data da Ocorrência *"
-                    type="date"
+                    value={watch('occurrence_date')}
+                    onChange={(val) => setValue('occurrence_date', val)}
                     error={errors.occurrence_date?.message}
-                    {...register('occurrence_date')}
                   />
                   <PrelineSelect
                     label="Colaborador"

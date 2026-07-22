@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { EMPLOYEE_STATUS_LABELS } from '../../lib/constants';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect, ConfirmModal } from '../../components/ui';
 
 interface Employee {
   id: string;
@@ -38,6 +38,9 @@ export function EmployeesListPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [confirmName, setConfirmName] = useState('');
 
   const fetchEmployees = async () => {
     try {
@@ -62,14 +65,17 @@ export function EmployeesListPage() {
     fetchEmployees();
   }, [page, search, statusFilter]);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Tem certeza que deseja desativar ${name}?`)) return;
-
+  const handleDelete = async () => {
+    if (!confirmId) return;
     try {
-      await api.delete(`/employees/${id}`);
+      await api.delete(`/employees/${confirmId}`);
       fetchEmployees();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Erro ao desativar colaborador');
+    } finally {
+      setConfirmOpen(false);
+      setConfirmId(null);
+      setConfirmName('');
     }
   };
 
@@ -198,7 +204,7 @@ export function EmployeesListPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDelete(emp.id, emp.full_name)}
+                              onClick={() => { setConfirmId(emp.id); setConfirmName(emp.full_name); setConfirmOpen(true); }}
                               className="text-red-500 hover:text-red-600"
                             >
                               <Trash2 className="size-4" />
@@ -224,6 +230,17 @@ export function EmployeesListPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setConfirmId(null); setConfirmName(''); }}
+        onConfirm={handleDelete}
+        title="Confirmar desativação"
+        message={`Tem certeza que deseja desativar ${confirmName}?`}
+        variant="warning"
+        confirmLabel="Confirmar"
+        cancelLabel="Cancelar"
+      />
     </div>
   );
 }

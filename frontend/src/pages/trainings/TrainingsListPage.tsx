@@ -4,7 +4,7 @@ import { GraduationCap, Plus, Search, Edit, Trash2, Clock, Award } from 'lucide-
 import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect, ConfirmModal } from '../../components/ui';
 
 interface Training {
   id: string;
@@ -77,6 +77,9 @@ export function TrainingsListPage() {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [confirmName, setConfirmName] = useState('');
 
   const fetchTrainings = async () => {
     try {
@@ -102,14 +105,17 @@ export function TrainingsListPage() {
     fetchTrainings();
   }, [page, search, categoryFilter, statusFilter]);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Tem certeza que deseja excluir o treinamento "${name}"?`)) return;
-
+  const handleDelete = async () => {
+    if (!confirmId) return;
     try {
-      await api.delete(`/trainings/${id}`);
+      await api.delete(`/trainings/${confirmId}`);
       fetchTrainings();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Erro ao excluir treinamento');
+    } finally {
+      setConfirmOpen(false);
+      setConfirmId(null);
+      setConfirmName('');
     }
   };
 
@@ -253,7 +259,7 @@ export function TrainingsListPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDelete(t.id, t.name)}
+                              onClick={() => { setConfirmId(t.id); setConfirmName(t.name); setConfirmOpen(true); }}
                               className="text-red-500 hover:text-red-600"
                             >
                               <Trash2 className="size-4" />
@@ -279,6 +285,17 @@ export function TrainingsListPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setConfirmId(null); setConfirmName(''); }}
+        onConfirm={handleDelete}
+        title="Confirmar exclusão"
+        message={`Tem certeza que deseja excluir o treinamento "${confirmName}"?`}
+        variant="danger"
+        confirmLabel="Confirmar"
+        cancelLabel="Cancelar"
+      />
     </div>
   );
 }

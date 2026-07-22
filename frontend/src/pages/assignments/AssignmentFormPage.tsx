@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import api from '../../lib/api';
 import { PageHeader } from '../../components/custom';
-import { Button, Input, Card, CardContent, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Spinner, PrelineSelect, DatePicker } from '../../components/ui';
 
 const assignmentSchema = z.object({
   employee_id: z.string().min(1, 'Colaborador é obrigatório'),
@@ -171,17 +171,17 @@ export function AssignmentFormPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Input
+                  <DatePicker
                     label="Data de Início *"
-                    type="date"
+                    value={watch('start_date')}
+                    onChange={(val) => setValue('start_date', val)}
                     error={errors.start_date?.message}
-                    {...register('start_date')}
                   />
-                  <Input
+                  <DatePicker
                     label="Data de Fim"
-                    type="date"
+                    value={watch('end_date')}
+                    onChange={(val) => setValue('end_date', val)}
                     error={errors.end_date?.message}
-                    {...register('end_date')}
                   />
                 </div>
 

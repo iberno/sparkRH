@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import api from '../../lib/api';
 import { PageHeader } from '../../components/custom';
-import { Button, Input, Card, CardContent, Spinner } from '../../components/ui';
+import { Button, Input, Card, CardContent, Spinner, DatePicker } from '../../components/ui';
 import { PrelineSelect } from '../../components/ui/preline-select';
 
 const trainingSchema = z.object({
@@ -219,23 +219,23 @@ export function TrainingFormPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <Input
+                  <DatePicker
                     label="Data de Início *"
-                    type="date"
+                    value={watch('start_date')}
+                    onChange={(val) => setValue('start_date', val)}
                     error={errors.start_date?.message}
-                    {...register('start_date')}
                   />
-                  <Input
+                  <DatePicker
                     label="Data de Término"
-                    type="date"
+                    value={watch('end_date')}
+                    onChange={(val) => setValue('end_date', val)}
                     error={errors.end_date?.message}
-                    {...register('end_date')}
                   />
-                  <Input
+                  <DatePicker
                     label="Data de Validade"
-                    type="date"
+                    value={watch('expiry_date')}
+                    onChange={(val) => setValue('expiry_date', val)}
                     error={errors.expiry_date?.message}
-                    {...register('expiry_date')}
                   />
                 </div>
 

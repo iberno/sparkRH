@@ -4,7 +4,7 @@ import { Bike, Plus, Search, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect, ConfirmModal } from '../../components/ui';
 
 interface Driver {
   id: string;
@@ -39,6 +39,9 @@ export function DriversListPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [confirmName, setConfirmName] = useState('');
 
   const fetchDrivers = async () => {
     try {
@@ -63,15 +66,18 @@ export function DriversListPage() {
     fetchDrivers();
   }, [page, search, statusFilter]);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Tem certeza que deseja desativar o motorista ${name}?`)) return;
-
+  const handleDelete = async () => {
+    if (!confirmId) return;
     try {
-      await api.delete(`/drivers/${id}`);
+      await api.delete(`/drivers/${confirmId}`);
       toast.success('Motorista desativado com sucesso!');
       fetchDrivers();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Erro ao desativar motorista');
+    } finally {
+      setConfirmOpen(false);
+      setConfirmId(null);
+      setConfirmName('');
     }
   };
 
@@ -213,7 +219,7 @@ export function DriversListPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDelete(d.id, d.employee.full_name)}
+                              onClick={() => { setConfirmId(d.id); setConfirmName(d.employee.full_name); setConfirmOpen(true); }}
                               className="text-red-500 hover:text-red-600"
                             >
                               <Trash2 className="size-4" />
@@ -239,6 +245,15 @@ export function DriversListPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setConfirmId(null); setConfirmName(''); }}
+        onConfirm={handleDelete}
+        title="Confirmar desativação"
+        message={`Tem certeza que deseja desativar o motorista ${confirmName}?`}
+        variant="warning"
+      />
     </div>
   );
 }

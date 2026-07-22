@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import api from '../../lib/api';
 import { PageHeader } from '../../components/custom';
-import { Button, Input, Card, CardContent, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, PrelineSelect, DatePicker } from '../../components/ui';
 
 const overtimeSchema = z.object({
   employee_id: z.string().min(1, 'Colaborador é obrigatório'),
@@ -120,11 +120,11 @@ export function OvertimeFormPage() {
                     />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-                    <Input
+                    <DatePicker
                       label="Data *"
-                      type="date"
+                      value={watch('request_date')}
+                      onChange={(val) => setValue('request_date', val)}
                       error={errors.request_date?.message}
-                      {...register('request_date')}
                     />
                     <Input
                       label="Horário Início *"

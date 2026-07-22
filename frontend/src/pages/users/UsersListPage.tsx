@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { ROLES } from '../../lib/constants';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect, ConfirmModal } from '../../components/ui';
 
 interface User {
   id: string;
@@ -43,6 +43,8 @@ export function UsersListPage() {
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const fetchUsers = async () => {
     try {
@@ -67,14 +69,16 @@ export function UsersListPage() {
     fetchUsers();
   }, [page, search, roleFilter]);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja desativar este usuário?')) return;
-
+  const handleDelete = async () => {
+    if (!confirmId) return;
     try {
-      await api.delete(`/users/${id}`);
+      await api.delete(`/users/${confirmId}`);
       fetchUsers();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Erro ao desativar usuário');
+    } finally {
+      setConfirmOpen(false);
+      setConfirmId(null);
     }
   };
 
@@ -208,7 +212,7 @@ export function UsersListPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDelete(user.id)}
+                              onClick={() => { setConfirmId(user.id); setConfirmOpen(true); }}
                               className="text-red-500 hover:text-red-600"
                             >
                               <Trash2 className="size-4" />
@@ -235,6 +239,15 @@ export function UsersListPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setConfirmId(null); }}
+        onConfirm={handleDelete}
+        title="Confirmar desativação"
+        message="Tem certeza que deseja desativar este usuário?"
+        variant="warning"
+      />
     </div>
   );
 }

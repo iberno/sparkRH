@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import api from '../../lib/api';
 import { PageHeader } from '../../components/custom';
-import { Button, Input, Card, CardContent, Spinner } from '../../components/ui';
+import { Button, Input, Card, CardContent, Spinner, DatePicker } from '../../components/ui';
 import { PrelineSelect } from '../../components/ui/preline-select';
 
 const vehicleSchema = z.object({
@@ -202,17 +202,17 @@ export function VehicleFormPage() {
                   />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Input
+                  <DatePicker
                     label="Validade do Seguro"
-                    type="date"
+                    value={watch('insurance_expiry')}
+                    onChange={(val) => setValue('insurance_expiry', val)}
                     error={errors.insurance_expiry?.message}
-                    {...register('insurance_expiry')}
                   />
-                  <Input
+                  <DatePicker
                     label="Validade do Licenciamento"
-                    type="date"
+                    value={watch('licensing_expiry')}
+                    onChange={(val) => setValue('licensing_expiry', val)}
                     error={errors.licensing_expiry?.message}
-                    {...register('licensing_expiry')}
                   />
                 </div>
               </div>

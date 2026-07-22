@@ -4,7 +4,7 @@ import { Car, Plus, Search, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect, ConfirmModal } from '../../components/ui';
 
 interface Vehicle {
   id: string;
@@ -37,6 +37,9 @@ export function VehiclesListPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [confirmName, setConfirmName] = useState('');
 
   const fetchVehicles = async () => {
     try {
@@ -61,15 +64,18 @@ export function VehiclesListPage() {
     fetchVehicles();
   }, [page, search, statusFilter]);
 
-  const handleDelete = async (id: string, plate: string) => {
-    if (!confirm(`Tem certeza que deseja desativar o veículo ${plate}?`)) return;
-
+  const handleDelete = async () => {
+    if (!confirmId) return;
     try {
-      await api.delete(`/vehicles/${id}`);
+      await api.delete(`/vehicles/${confirmId}`);
       toast.success('Veículo desativado com sucesso!');
       fetchVehicles();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Erro ao desativar veículo');
+    } finally {
+      setConfirmOpen(false);
+      setConfirmId(null);
+      setConfirmName('');
     }
   };
 
@@ -218,7 +224,7 @@ export function VehiclesListPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDelete(v.id, v.plate)}
+                              onClick={() => { setConfirmId(v.id); setConfirmName(v.plate); setConfirmOpen(true); }}
                               className="text-red-500 hover:text-red-600"
                             >
                               <Trash2 className="size-4" />
@@ -244,6 +250,17 @@ export function VehiclesListPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setConfirmId(null); setConfirmName(''); }}
+        onConfirm={handleDelete}
+        title="Confirmar desativação"
+        message={`Tem certeza que deseja desativar o veículo ${confirmName}?`}
+        variant="warning"
+        confirmLabel="Confirmar"
+        cancelLabel="Cancelar"
+      />
     </div>
   );
 }

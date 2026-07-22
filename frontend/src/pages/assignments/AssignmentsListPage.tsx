@@ -4,7 +4,7 @@ import { Briefcase, Plus, Search, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect, ConfirmModal } from '../../components/ui';
 
 interface Assignment {
   id: string;
@@ -36,6 +36,8 @@ export function AssignmentsListPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const fetchAssignments = async () => {
     try {
@@ -60,15 +62,17 @@ export function AssignmentsListPage() {
     fetchAssignments();
   }, [page, search, statusFilter]);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir esta alocação?')) return;
-
+  const handleDelete = async () => {
+    if (!confirmId) return;
     try {
-      await api.delete(`/assignments/${id}`);
+      await api.delete(`/assignments/${confirmId}`);
       toast.success('Alocação excluída com sucesso!');
       fetchAssignments();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Erro ao excluir alocação');
+    } finally {
+      setConfirmOpen(false);
+      setConfirmId(null);
     }
   };
 
@@ -192,7 +196,7 @@ export function AssignmentsListPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDelete(a.id)}
+                              onClick={() => { setConfirmId(a.id); setConfirmOpen(true); }}
                               className="text-red-500 hover:text-red-600"
                             >
                               <Trash2 className="size-4" />
@@ -218,6 +222,15 @@ export function AssignmentsListPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setConfirmId(null); }}
+        onConfirm={handleDelete}
+        title="Confirmar exclusão"
+        message="Tem certeza que deseja excluir esta alocação?"
+        variant="danger"
+      />
     </div>
   );
 }

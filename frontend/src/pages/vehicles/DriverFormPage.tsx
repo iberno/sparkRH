@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import api from '../../lib/api';
 import { PageHeader } from '../../components/custom';
-import { Button, Input, Card, CardContent, Spinner } from '../../components/ui';
+import { Button, Input, Card, CardContent, Spinner, DatePicker } from '../../components/ui';
 import { PrelineSelect } from '../../components/ui/preline-select';
 
 const driverSchema = z.object({
@@ -182,11 +182,11 @@ export function DriverFormPage() {
                     onChange={(val) => setValue('cnh_category', val)}
                     placeholder="Selecione..."
                   />
-                  <Input
+                  <DatePicker
                     label="Validade da CNH *"
-                    type="date"
+                    value={watch('cnh_expiry')}
+                    onChange={(val) => setValue('cnh_expiry', val)}
                     error={errors.cnh_expiry?.message}
-                    {...register('cnh_expiry')}
                   />
                   <PrelineSelect
                     label="Status"
@@ -203,11 +203,11 @@ export function DriverFormPage() {
                     error={errors.cfc_name?.message}
                     {...register('cfc_name')}
                   />
-                  <Input
+                  <DatePicker
                     label="Validade do CFC"
-                    type="date"
+                    value={watch('cfc_validity')}
+                    onChange={(val) => setValue('cfc_validity', val)}
                     error={errors.cfc_validity?.message}
-                    {...register('cfc_validity')}
                   />
                 </div>
               </div>

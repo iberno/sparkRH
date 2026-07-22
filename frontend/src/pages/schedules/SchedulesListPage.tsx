@@ -4,7 +4,7 @@ import { Calendar, Plus, Search, Edit, Trash2, CalendarDays } from 'lucide-react
 import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect, ConfirmModal } from '../../components/ui';
 
 interface Schedule {
   id: string;
@@ -65,6 +65,8 @@ export function SchedulesListPage() {
   const [page, setPage] = useState(1);
   const [postOptions, setPostOptions] = useState<{ value: string; label: string }[]>([]);
   const [postFilter, setPostFilter] = useState('');
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPosts();
@@ -118,19 +120,22 @@ export function SchedulesListPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir esta escala?')) return;
+  const handleDelete = async () => {
+    if (!confirmId) return;
     try {
       if (activeTab === 'generated') {
-        await api.delete(`/schedules/${id}`);
+        await api.delete(`/schedules/${confirmId}`);
       } else {
-        await api.delete(`/schedules/templates/${id}`);
+        await api.delete(`/schedules/templates/${confirmId}`);
       }
       toast.success('Excluído com sucesso!');
       if (activeTab === 'generated') fetchSchedules();
       else fetchTemplates();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Erro ao excluir');
+    } finally {
+      setConfirmOpen(false);
+      setConfirmId(null);
     }
   };
 
@@ -265,7 +270,7 @@ export function SchedulesListPage() {
                           </td>
                           <td className="py-3 px-4">
                             <div className="flex items-center justify-end gap-2">
-                              <Button variant="ghost" size="sm" onClick={() => handleDelete(s.id)} className="text-red-500 hover:text-red-600">
+                              <Button variant="ghost" size="sm" onClick={() => { setConfirmId(s.id); setConfirmOpen(true); }} className="text-red-500 hover:text-red-600">
                                 <Trash2 className="size-4" />
                               </Button>
                             </div>
@@ -329,7 +334,7 @@ export function SchedulesListPage() {
                             <Link to={`/schedules/${t.id}/edit`}>
                               <Button variant="ghost" size="sm"><Edit className="size-4" /></Button>
                             </Link>
-                            <Button variant="ghost" size="sm" onClick={() => handleDelete(t.id)} className="text-red-500 hover:text-red-600">
+                            <Button variant="ghost" size="sm" onClick={() => { setConfirmId(t.id); setConfirmOpen(true); }} className="text-red-500 hover:text-red-600">
                               <Trash2 className="size-4" />
                             </Button>
                           </div>
@@ -343,6 +348,17 @@ export function SchedulesListPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setConfirmId(null); }}
+        onConfirm={handleDelete}
+        title="Confirmar exclusão"
+        message="Tem certeza que deseja excluir esta escala?"
+        variant="danger"
+        confirmLabel="Confirmar"
+        cancelLabel="Cancelar"
+      />
     </div>
   );
 }

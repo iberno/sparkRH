@@ -4,7 +4,7 @@ import { HeartPulse, Plus, Search, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect, ConfirmModal } from '../../components/ui';
 
 interface Aso {
   id: string;
@@ -59,6 +59,8 @@ export function AsosListPage() {
   const [typeFilter, setTypeFilter] = useState('');
   const [resultFilter, setResultFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const fetchAsos = async () => {
     try {
@@ -84,15 +86,17 @@ export function AsosListPage() {
     fetchAsos();
   }, [page, search, typeFilter, resultFilter]);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este ASO?')) return;
-
+  const handleDelete = async () => {
+    if (!confirmId) return;
     try {
-      await api.delete(`/asos/${id}`);
+      await api.delete(`/asos/${confirmId}`);
       toast.success('ASO excluído com sucesso!');
       fetchAsos();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Erro ao excluir ASO');
+    } finally {
+      setConfirmOpen(false);
+      setConfirmId(null);
     }
   };
 
@@ -221,7 +225,7 @@ export function AsosListPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDelete(aso.id)}
+                              onClick={() => { setConfirmId(aso.id); setConfirmOpen(true); }}
                               className="text-red-500 hover:text-red-600"
                             >
                               <Trash2 className="size-4" />
@@ -247,6 +251,15 @@ export function AsosListPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setConfirmId(null); }}
+        onConfirm={handleDelete}
+        title="Confirmar exclusão"
+        message="Tem certeza que deseja excluir este ASO?"
+        variant="danger"
+      />
     </div>
   );
 }

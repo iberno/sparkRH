@@ -4,7 +4,7 @@ import { Building2, Plus, Search, Edit, Eye, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../../lib/api';
 import { PageHeader, EmptyState } from '../../components/custom';
-import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect } from '../../components/ui';
+import { Button, Input, Card, CardContent, Badge, Pagination, Spinner, PrelineSelect, ConfirmModal } from '../../components/ui';
 
 interface Client {
   id: string;
@@ -37,6 +37,9 @@ export function ClientsListPage() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [confirmName, setConfirmName] = useState('');
 
   const fetchClients = async () => {
     try {
@@ -61,14 +64,17 @@ export function ClientsListPage() {
     fetchClients();
   }, [page, search, typeFilter]);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Tem certeza que deseja desativar ${name}?`)) return;
-
+  const handleDelete = async () => {
+    if (!confirmId) return;
     try {
-      await api.delete(`/clients/${id}`);
+      await api.delete(`/clients/${confirmId}`);
       fetchClients();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Erro ao desativar cliente');
+    } finally {
+      setConfirmOpen(false);
+      setConfirmId(null);
+      setConfirmName('');
     }
   };
 
@@ -200,7 +206,7 @@ export function ClientsListPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDelete(client.id, client.name)}
+                              onClick={() => { setConfirmId(client.id); setConfirmName(client.name); setConfirmOpen(true); }}
                               className="text-red-500 hover:text-red-600"
                             >
                               <Trash2 className="size-4" />
@@ -226,6 +232,17 @@ export function ClientsListPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setConfirmId(null); setConfirmName(''); }}
+        onConfirm={handleDelete}
+        title="Confirmar desativação"
+        message={`Tem certeza que deseja desativar ${confirmName}?`}
+        variant="warning"
+        confirmLabel="Confirmar"
+        cancelLabel="Cancelar"
+      />
     </div>
   );
 }
