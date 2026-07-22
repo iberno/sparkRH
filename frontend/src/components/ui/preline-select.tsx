@@ -103,11 +103,20 @@ export const PrelineSelect = forwardRef<HTMLSelectElement, PrelineSelectProps>(
           }
         } catch { /* ignore */ }
 
+        const parent = el.parentElement;
+        if (parent) {
+          parent.querySelectorAll('[role="listbox"], [data-hs-select-toggle]').forEach(n => n.remove());
+          parent.querySelectorAll('button[type="button"]').forEach(n => {
+            if (n.hasAttribute('data-hs-select-toggle')) n.remove();
+          });
+        }
+
         el.removeAttribute('data-hs-select');
 
         requestAnimationFrame(() => {
           if (destroyed) return;
           el.setAttribute('data-hs-select', hsSelectConfig);
+          el.innerHTML = '<option value="">' + placeholder + '</option>' + options.map(o => `<option value="${o.value}">${o.label}</option>`).join('');
           try {
             window.HSSelect?.autoInit();
             instance = window.HSSelect?.getInstance(el);

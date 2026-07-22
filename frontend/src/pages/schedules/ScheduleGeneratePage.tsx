@@ -118,7 +118,6 @@ export function ScheduleGeneratePage() {
                     placeholder="Selecione o posto"
                   />
                    <PrelineSelect
-                    key={postId || 'no-post'}
                     label="Modelo de Escala *"
                     options={templateOptions}
                     value={templateId}
