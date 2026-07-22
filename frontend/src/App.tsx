@@ -14,6 +14,14 @@ import { AuditLogsPage } from './pages/audit/AuditLogsPage';
 import { EmployeesListPage } from './pages/employees/EmployeesListPage';
 import { EmployeeFormPage } from './pages/employees/EmployeeFormPage';
 import { EmployeeDetailPage } from './pages/employees/EmployeeDetailPage';
+import { ClientsListPage } from './pages/clients/ClientsListPage';
+import { ClientFormPage } from './pages/clients/ClientFormPage';
+import { ContractsListPage } from './pages/contracts/ContractsListPage';
+import { ContractFormPage } from './pages/contracts/ContractFormPage';
+import { WorkPostsListPage } from './pages/work-posts/WorkPostsListPage';
+import { WorkPostFormPage } from './pages/work-posts/WorkPostFormPage';
+import { AssignmentsListPage } from './pages/assignments/AssignmentsListPage';
+import { AssignmentFormPage } from './pages/assignments/AssignmentFormPage';
 import { TrainingsListPage } from './pages/trainings/TrainingsListPage';
 import { TrainingFormPage } from './pages/trainings/TrainingFormPage';
 import { AsosListPage } from './pages/asos/AsosListPage';
@@ -64,6 +72,18 @@ function AppRoutes() {
         <Route path="/employees/new" element={<EmployeeFormPage />} />
         <Route path="/employees/:id" element={<EmployeeDetailPage />} />
         <Route path="/employees/:id/edit" element={<EmployeeFormPage />} />
+        <Route path="/clients" element={<ClientsListPage />} />
+        <Route path="/clients/new" element={<ClientFormPage />} />
+        <Route path="/clients/:id/edit" element={<ClientFormPage />} />
+        <Route path="/contracts" element={<ContractsListPage />} />
+        <Route path="/contracts/new" element={<ContractFormPage />} />
+        <Route path="/contracts/:id/edit" element={<ContractFormPage />} />
+        <Route path="/work-posts" element={<WorkPostsListPage />} />
+        <Route path="/work-posts/new" element={<WorkPostFormPage />} />
+        <Route path="/work-posts/:id/edit" element={<WorkPostFormPage />} />
+        <Route path="/assignments" element={<AssignmentsListPage />} />
+        <Route path="/assignments/new" element={<AssignmentFormPage />} />
+        <Route path="/assignments/:id/edit" element={<AssignmentFormPage />} />
         <Route path="/trainings" element={<TrainingsListPage />} />
         <Route path="/trainings/new" element={<TrainingFormPage />} />
         <Route path="/trainings/:id/edit" element={<TrainingFormPage />} />

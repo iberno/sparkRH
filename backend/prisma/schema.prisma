@@ -194,6 +194,7 @@ model employees {
 model companies {
   id         String   @id @default(uuid()) @db.Uuid
   name       String   @db.VarChar(255)
+  trade_name String?  @db.VarChar(255)
   cnpj       String   @unique @db.VarChar(18)
   phone      String?  @db.VarChar(20)
   email      String?  @db.VarChar(255)
@@ -208,16 +209,20 @@ model companies {
 }
 
 model clients {
-  id            String   @id @default(uuid()) @db.Uuid
-  name          String   @db.VarChar(255)
-  cnpj_cpf      String   @db.VarChar(18)
-  contact_name  String?  @db.VarChar(255)
-  contact_phone String?  @db.VarChar(20)
-  contact_email String?  @db.VarChar(255)
+  id            String    @id @default(uuid()) @db.Uuid
+  name          String    @db.VarChar(255)
+  type          String    @default("JURIDICA") @db.VarChar(10)
+  cnpj_cpf      String    @db.VarChar(18)
+  contact_name  String?   @db.VarChar(255)
+  contact_phone String?   @db.VarChar(20)
+  contact_email String?   @db.VarChar(255)
   address       String?
-  is_active     Boolean  @default(true)
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  city          String?   @db.VarChar(100)
+  state         String?   @db.VarChar(2)
+  is_active     Boolean   @default(true)
+  deleted_at    DateTime?
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
 
   contracts contracts[]
 
@@ -235,9 +240,16 @@ model contracts {
   end_date     DateTime? @db.Date
   renewal_date DateTime?
 
-  total_value   Decimal @db.Decimal(10, 2)
-  payment_terms String? @db.VarChar(100)
+  monthly_value  Decimal? @db.Decimal(10, 2)
+  hourly_value   Decimal? @db.Decimal(8, 2)
+  total_value    Decimal  @db.Decimal(10, 2)
+  payment_terms  String?  @db.VarChar(100)
+  payment_day    Int?
+  payment_method String?  @db.VarChar(50)
+  billing_cycle  String?  @db.VarChar(20)
+  notes          String?
 
+  deleted_at DateTime?
   status     String   @default("ATIVO") @db.VarChar(20)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -253,17 +265,26 @@ model contracts {
 model work_posts {
   id          String @id @default(uuid()) @db.Uuid
   contract_id String @db.Uuid
+  code        String? @unique @db.VarChar(20)
   name        String @db.VarChar(255)
   post_type   String @db.VarChar(50)
+  description String?
 
-  address    String?
-  latitude   Decimal? @db.Decimal(10, 8)
-  longitude  Decimal? @db.Decimal(11, 8)
-  gps_radius Int      @default(100)
+  address   String?
+  city      String?  @db.VarChar(100)
+  state     String?  @db.VarChar(2)
+  latitude  Decimal? @db.Decimal(10, 8)
+  longitude Decimal? @db.Decimal(11, 8)
+  gps_radius Int     @default(100)
 
   schedule_type      String @default("FIXO") @db.VarChar(20)
+  min_staff          Int    @default(1)
+  max_staff          Int    @default(5)
   required_vacancies Int    @default(1)
 
+  supervisor_id String? @db.Uuid
+
+  deleted_at DateTime?
   status     String   @default("ATIVO") @db.VarChar(20)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -318,7 +339,8 @@ model post_schedules {
 
   days_of_week String @db.VarChar(20)
 
-  is_active  Boolean  @default(true)
+  is_default Boolean @default(false)
+  is_active  Boolean @default(true)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 

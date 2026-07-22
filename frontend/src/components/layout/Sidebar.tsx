@@ -33,6 +33,7 @@ const navItems: NavItem[] = [
   { label: 'Clientes', href: '/clients', icon: Building2 },
   { label: 'Contratos', href: '/contracts', icon: FileText },
   { label: 'Postos', href: '/work-posts', icon: Shield },
+  { label: 'Alocações', href: '/assignments', icon: Users },
   { label: 'Escalas', href: '/schedules', icon: Calendar },
   { label: 'Ponto', href: '/time-clocks', icon: Clock },
   { label: 'Folha de Pagamento', href: '/payroll', icon: DollarSign },
