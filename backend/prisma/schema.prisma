@@ -174,6 +174,7 @@ model employees {
   asos                asos[]
   uniforms_issued     uniforms_issued[]
   vehicle_assignments vehicle_assignments[]
+  drivers             drivers[]
   occurrences         occurrences[]
   vacations           vacations[]
   leaves              leaves[]
@@ -777,6 +778,32 @@ model vehicle_assignments {
 }
 
 // ============================================================
+// Module: Drivers
+// ============================================================
+
+model drivers {
+  id          String @id @default(uuid()) @db.Uuid
+  employee_id String @db.Uuid
+
+  cnh_number  String  @db.VarChar(20)
+  cnh_category String @db.VarChar(5)
+  cnh_expiry  DateTime @db.Date
+
+  cfc_name     String? @db.VarChar(255)
+  cfc_validity DateTime? @db.Date
+
+  status String @default("ATIVO") @db.VarChar(20)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  employee employees @relation(fields: [employee_id], references: [id])
+
+  @@unique([cnh_number])
+  @@map("drivers")
+}
+
+// ============================================================
 // Module: Occurrences
 // ============================================================
 
@@ -791,7 +818,13 @@ model occurrences {
   occurrence_date DateTime @db.Date
   severity        String?  @db.VarChar(20)
 
+  actions_taken String?
+  photo_urls    Json?
+
   registered_by String @db.Uuid
+
+  resolved_by String?   @db.Uuid
+  resolved_at DateTime?
 
   status String @default("REGISTRADA") @db.VarChar(20)
 

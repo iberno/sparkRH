@@ -14,6 +14,16 @@ import { AuditLogsPage } from './pages/audit/AuditLogsPage';
 import { EmployeesListPage } from './pages/employees/EmployeesListPage';
 import { EmployeeFormPage } from './pages/employees/EmployeeFormPage';
 import { EmployeeDetailPage } from './pages/employees/EmployeeDetailPage';
+import { TrainingsListPage } from './pages/trainings/TrainingsListPage';
+import { TrainingFormPage } from './pages/trainings/TrainingFormPage';
+import { AsosListPage } from './pages/asos/AsosListPage';
+import { AsoFormPage } from './pages/asos/AsoFormPage';
+import { OccurrencesListPage } from './pages/occurrences/OccurrencesListPage';
+import { OccurrenceFormPage } from './pages/occurrences/OccurrenceFormPage';
+import { VehiclesListPage } from './pages/vehicles/VehiclesListPage';
+import { VehicleFormPage } from './pages/vehicles/VehicleFormPage';
+import { DriversListPage } from './pages/vehicles/DriversListPage';
+import { DriverFormPage } from './pages/vehicles/DriverFormPage';
 import { AppLayout } from './components/layout/AppLayout';
 import { AuthLayout } from './components/layout/AuthLayout';
 import { useAuthStore } from './stores/authStore';
@@ -54,6 +64,21 @@ function AppRoutes() {
         <Route path="/employees/new" element={<EmployeeFormPage />} />
         <Route path="/employees/:id" element={<EmployeeDetailPage />} />
         <Route path="/employees/:id/edit" element={<EmployeeFormPage />} />
+        <Route path="/trainings" element={<TrainingsListPage />} />
+        <Route path="/trainings/new" element={<TrainingFormPage />} />
+        <Route path="/trainings/:id/edit" element={<TrainingFormPage />} />
+        <Route path="/asos" element={<AsosListPage />} />
+        <Route path="/asos/new" element={<AsoFormPage />} />
+        <Route path="/asos/:id/edit" element={<AsoFormPage />} />
+        <Route path="/occurrences" element={<OccurrencesListPage />} />
+        <Route path="/occurrences/new" element={<OccurrenceFormPage />} />
+        <Route path="/occurrences/:id/edit" element={<OccurrenceFormPage />} />
+        <Route path="/vehicles" element={<VehiclesListPage />} />
+        <Route path="/vehicles/new" element={<VehicleFormPage />} />
+        <Route path="/vehicles/:id/edit" element={<VehicleFormPage />} />
+        <Route path="/drivers" element={<DriversListPage />} />
+        <Route path="/drivers/new" element={<DriverFormPage />} />
+        <Route path="/drivers/:id/edit" element={<DriverFormPage />} />
         <Route path="/audit" element={<AuditLogsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/login" />} />
