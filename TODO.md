@@ -64,16 +64,17 @@
 ## Fase 3 — Colaboradores (DP/RH)
 
 ### Backend
-- [ ] CRUD Colaboradores (dados pessoais, documentos, contatos)
+- [x] CRUD Colaboradores (dados pessoais, documentos, contatos)
 - [ ] Upload de documentos (ASO, certificados, etc.)
-- [ ] Endereços (1:N)
-- [ ] Contatos de emergência (1:N)
-- [ ] Banco de horas (criação + saldo)
+- [x] Endereços (1:N — integrado ao formulário)
+- [x] Contatos de emergência (1:N)
+- [x] Banco de horas (criação + saldo)
+- [x] Stats de colaboradores (ativos, inativos, total)
 
 ### Frontend
-- [ ] Página Listagem Colaboradores
-- [ ] Página Criar/Editar Colaborador
-- [ ] Página Detalhes do Colaborador
+- [x] Página Listagem Colaboradores (tabela + busca + filtro status + paginação)
+- [x] Página Criar/Editar Colaborador (5 abas: dados pessoais, contato, endereço, banco, documentos + ViaCEP)
+- [x] Página Detalhes do Colaborador (7 abas + cards de status)
 - [ ] Upload de documentos
 
 ---
@@ -202,13 +203,21 @@
 4. `0481747` — Spark brand dark palette
 5. `504f818` — brand colors
 6. `96aec5c` — Frontend architecture per spec 13
+7. `c10c426` — Fase 1 Auth completa (refresh, logout, forgot, reset, first-access, change-password)
+8. `b305761` — Fase 2 Usuarios Admin (CRUD, permissions, audit logs)
+9. `546b8b7` — Select UI fix (dark mode, form center)
+10. `8301682` — 500 error fix (page/limit Number, exclude password_hash)
+11. `b6448aa` — Fase 3 Colaboradores + PrelineSelect + Toastify spark theme
 
 ---
 
 ## Pendências / Fixes
 
 - [ ] Restaurar validação completa de CPF no frontend (`cpfFullSchema` já criado, trocar `cpfSchema` → `cpfFullSchema` nos forms de cadastro)
+- [ ] Upload de documentos (ASO, certificados) — backend + frontend
+- [ ] Toastify: considerar tema light mode para o tema Spark (atualmente só dark)
+- [ ] PrelineSelect: suporte a `clearable` (botão X para limpar seleção)
 
 ---
 
-*Última atualização: 2026-07-21*
+*Última atualização: 2026-07-22*
